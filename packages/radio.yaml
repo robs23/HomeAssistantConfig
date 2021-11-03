@@ -1,0 +1,97 @@
+group:
+  radio:
+    name: Radio
+    icon: mdi:radio
+    entities:
+    - input_select.radio_station
+    - input_select.chromecast_radio
+    - script.radio
+    - script.radio_off
+    - input_number.volume_radio
+
+
+input_select:
+  radio_station:
+    name: 'Wybierz stację:'
+    options:
+      - AntyRadio
+      - Nowy Świat
+      - RMF FM
+      - Radio ZET
+      - Radio Złote Przeboje
+      - Radio Wrocław
+    initial: AntyRadio
+    icon: mdi:radio
+    
+  chromecast_radio:
+    name: 'Wybierz głośnik:'
+    options:
+      - Kuchnia
+      - Salon
+    initial: Kuchnia
+    icon: mdi:speaker-wireless
+
+input_number: 
+  volume_radio:
+    name: Głośność
+    icon: mdi:volume-high
+    min: 0
+    max: 30
+    step: 1
+    initial: 7
+automation:
+  - alias: Włącz radio
+#    hide_entity: True
+    trigger:
+      - platform: state
+        entity_id: input_select.radio_station
+    action: 
+      - service: script.radio
+  - alias: Głośność
+    trigger:
+      platform: state
+      entity_id: input_number.volume_radio
+    action:
+      service: media_player.volume_set
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.chromecast_radio", "Kuchnia") %} media_player.mini
+          {% elif is_state("input_select.chromecast_radio", "Salon") %} media_player.photo_frame
+          {% endif %}
+        volume_level: "{{  states('input_number.volume_radio')|int/30  }}"
+
+script:
+  radio:
+    alias: Włącz radio
+    sequence:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.chromecast_radio", "Kuchnia") %} media_player.mini
+          {% elif is_state("input_select.chromecast_radio", "Salon") %} media_player.photo_frame
+          {% endif %}
+        volume_level: "{{  states('input_number.volume_radio')|int/30  }}" 
+    - service: media_player.play_media
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.chromecast_radio", "Kuchnia") %} media_player.mini
+          {% elif is_state("input_select.chromecast_radio", "Salon") %} media_player.photo_frame
+          {% endif %}
+        media_content_id: >
+          {% if is_state("input_select.radio_station", "AntyRadio") %} http://ant-waw-01.cdn.eurozet.pl:8602/;stream.mp3
+          {% elif is_state("input_select.radio_station", "RMF FM") %} http://195.150.20.242:8000/rmf_fm
+          {% elif is_state("input_select.radio_station", "Nowy Świat") %} https://n04.rcs.revma.com/ypqt40u0x1zuv?fbclid=IwAR3bQnBz74JO1TNCz29IlSbmfUFhQxSjlOddUj1ONpQFxQK2FfVlTzT957w&rj-ttl=5&rj-tok=AAABcxRHJeUABt06VQi1epmhnw
+          {% elif is_state("input_select.radio_station", "Radio ZET") %} http://antgre-01.cdn.eurozet.pl:8000/;stream
+          {% elif is_state("input_select.radio_station", "Radio Złote Przeboje") %} http://mainstream.radioagora.pl/zloteprzeboje.mp3
+          {% elif is_state("input_select.radio_station", "Radio Wrocław") %} http://stream4.nadaje.com:9240/prw
+              {% endif %}
+        media_content_type: audio/mp4
+  radio_off:
+    alias: Wyłącz radio
+    sequence:
+    - service: media_player.turn_off
+      data_template:
+        entity_id: >
+          {% if is_state("input_select.chromecast_radio", "Kuchnia") %} media_player.mini
+          {% elif is_state("input_select.chromecast_radio", "Salon") %} media_player.photo_frame
+          {% endif %}

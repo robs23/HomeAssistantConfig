@@ -1,0 +1,99 @@
+  dreambox_channel_up:
+    name: Dreambox channel up
+    initial: off
+  dreambox_channel_down:
+    name: Dreambox channel down
+    initial: off
+  tv_baby_tv:
+    name: Tv Baby Tv
+    initial: off
+  tv_ttv:
+    name: Tv TTV
+    initial: off
+  tv_4fun_tv:
+    name: 4Fun TV
+    initial: off
+  tv_tvn:
+    name: Tv TVN
+    initial: off
+  tv_polsat:
+    name: Tv Polsat
+    initial: off
+  tv_tvp1:
+    name: Tv TVP1
+    initial: off
+  tv_tvp2:
+    name: Tv TVP2
+    initial: off
+  tv_tvn_turbo:
+    name: TVN Turbo
+    initial: off
+  tv_polsat_music:
+    name: Polsat Music
+    initial: off
+  tv_eska:
+    name: Eska
+    initial: off
+  tv_hbo:
+    name: HBO
+    initial: off
+  tv_canal_plus:
+    name: Canal plus
+    initial: off
+  tv_switch:
+    name: Tv switch
+    initial: off
+  tv_toggle:
+    name: Tv toggle
+    initial: off
+  tv:
+    name: TV
+    initial: off
+  sleeping_mode:
+    name: Sleeping mode
+    initial: off
+  night_mode:
+    name: Night mode
+    initial: off
+  fake_heater:
+    initial: off
+  fake_bedroom_heater:
+    initial: off
+  tv_volume_up:
+    name: Tv volume up
+    initial: off
+  tv_volume_down:
+    name: Tv volume down
+    initial: off
+  tv_volume_up_by_2:
+    name: Tv volume up by 2
+    initial: off
+  tv_volume_down_by_2:
+    name: Tv volume down by 2
+    initial: off
+  tv_source_chromecast:
+    name: Tv source chromecast
+    initial: off
+  tv_source_tv:
+    name: Tv source Tv
+    initial: off
+  heating_season:
+    name: Heating season
+  away_mode:
+    name: Away mode
+  away_mode_turn_off_heating:
+    name: Away mode turn off heating
+  away_mode_schedule_return:
+    name: Away mode schedule return
+  schedule_cleaning:
+    name: Schedule cleaning
+  schedule_cleaning_kitchen:
+    name: Schedule cleaning kitchen
+  schedule_cleaning_living_room:
+    name: Schedule cleaning living room
+  schedule_cleaning_bedroom:
+    name: Schedule cleaning bedroom
+  schedule_cleaning_hall:
+    name: Schedule cleaning hall
+  away_mode_set:
+    name: Away mode set

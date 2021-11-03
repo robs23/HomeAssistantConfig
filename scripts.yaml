@@ -1,0 +1,134 @@
+youtube_children_playlist:
+  alias: Play children playlist on Youtube
+  sequence:
+  - service: media_extractor.play_media
+    entity_id: media_player.photo_frame
+    data:
+      media_content_id: https://youtu.be/uHToZTZimcs
+      media_content_type: video/youtube
+bathroom_cleaning:
+  alias: Bathroom cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 10
+  mode: single
+toilet_cleaning:
+  alias: Toilet cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 11
+  mode: single
+bedroom_cleaning:
+  alias: Bedroom cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 10
+  mode: single
+hall_cleaning:
+  alias: Hall cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 12
+  mode: single
+amelias_cleaning:
+  alias: Amelia's cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 14
+  mode: single
+kitchen_cleaning:
+  alias: Kitchen cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 13
+  mode: single
+living_room_cleaning:
+  alias: Living room cleaning
+  sequence:
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_language
+      params: 2
+  - service: vacuum.send_command
+    data:
+      entity_id: vacuum.lucy
+      command: set_mode_withroom
+      params:
+      - 0
+      - 1
+      - 1
+      - 11
+  mode: single

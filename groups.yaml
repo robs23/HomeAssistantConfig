@@ -1,0 +1,6 @@
+Living_room_lights:
+  name: Living room lights
+  entities:
+    - switch.living_room_lights_l1
+    - switch.living_room_lights_l2
+    - switch.living_room_lights_l3

@@ -1,0 +1,166 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+input_boolean: !include input_booleans.yaml
+
+http:
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+
+lovelace:
+  mode: yaml
+
+homeassistant:
+  packages: !include_dir_named packages
+  external_url: external_url
+  internal_url: internal_url
+
+media_extractor:
+
+google_assistant: !include google_assistant.yaml
+
+light:
+  - platform: group
+    name: Kitchen lights
+    entities:
+      - light.kitchen_lights_light_l1
+      - light.kitchen_lights_light_l2
+
+
+timer:
+  away_mode_setting_timer:
+    name: Start za
+    duration: "00:05:00"
+  away_mode_timeout_timer:
+    name: Koniec za
+  
+input_datetime:
+  away_mode_timeout:
+    name: Away mode timeout
+    has_date: true
+    has_time: true
+  away_mode_counter:
+    name: Away mode counter
+    has_time: true
+
+climate:
+  - platform: generic_thermostat
+    name: Amelia's thermostat
+    target_sensor: sensor.0x00158d00044bc01c_temperature
+    heater: input_boolean.fake_heater
+  - platform: generic_thermostat
+    name: Bedroom thermostat
+    target_sensor: sensor.0x00158d00044c015e_temperature
+    heater: input_boolean.fake_bedroom_heater
+
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_client_secret
+
+# spotcast:
+#   sp_dc: !secret spotcast_sp_dc
+#   sp_key: !secret spotcast_sp_key
+
+# Enigma2
+# enigma:
+#   devices:
+#     - host: 192.168.0.112
+#       port: 80
+#       name: Dreambox
+#       timeout: 20
+#       username: root
+#       picon: picon
+
+# notify:
+#   - platform: enigma
+#     host: 192.168.0.112
+#     port: 80
+#     username: root
+#     name: dreambox
+
+discovery:
+  ignore:
+    - yeelight
+yeelight:
+  devices:
+    192.168.0.100:
+      name: Tv lights
+
+media_player:
+  - platform: enigma2
+    host: 192.168.0.112
+  - platform: androidtv
+    host: 192.168.0.114 # IP of the Chromecast, insert yours here
+    port: 5555 # defaults to 5555
+    name: "Chromecast"
+    adb_server_ip: 127.0.0.1 # IP for the HA add on
+    adb_server_port: 5037 # port on the ADB server add on`
+
+mqtt:
+  broker: core-mosquitto
+  port: 1883
+  discovery: true
+  # discovery_prefix: homeassistant
+  birth_message:
+    topic: "hass/status"
+    payload: "online"
+  will_message:
+    topic: "hass/status"
+    payload: "offline"
+
+vacuum:
+  - platform: miio2
+    host: 192.168.0.106
+    token: !secret lucy_token
+    name: Lucy
+
+# Minix Smart Tv dongle
+binary_sensor:
+  - platform: workday
+    country: PL
+    name: "Workday sensor"
+  - platform: ping
+    host: 192.168.0.108
+    name: "Smart Tv"
+    count: 2
+    scan_interval: 30
+  - platform: template
+    sensors:
+      #Blitzwolf smartplug
+      tv:
+        friendly_name: "Tv"
+        icon_template: mdi:television-box
+        delay_off:
+          minutes: 3
+        value_template: "{{states('sensor.0x588e81fffed97f99_power') | float > 5 }}"
+      #Tv source = TV
+      tv_source_tv:
+        friendly_name: "Tv Source Tv"
+        icon_template: mdi:television-box
+        delay_off:
+          minutes: 3
+        value_template: "{{states('sensor.0x588e81fffed97f99_power') | float >= 44 }}"
+      #Tv source = Minix
+      tv_source_minix:
+        friendly_name: "Tv Source Minix"
+        icon_template: mdi:television-box
+        delay_off:
+          minutes: 3
+        value_template: "{{states('sensor.0x588e81fffed97f99_power') | float < 44 and states('sensor.0x588e81fffed97f99_power') | float > 10 }}"
+
+
+sensor:
+  - platform: template
+    sensors:
+      weather_temperature:
+        friendly_name: "Temperatura"
+        unit_of_measurement: "degrees"
+        value_template: "{{ state_attr('weather.dom', 'temperature') }}"

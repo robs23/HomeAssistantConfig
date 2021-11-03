@@ -1,0 +1,129 @@
+  project_id: hassiosyncer
+  service_account: !include HassioSyncer-26c30f602b6d.json
+  report_state: true
+  exposed_domains:
+    - script
+    - climate
+  entity_config:
+    light.0xbc33acfffe6d82d0_light:
+      expose: true
+      room: Amelia's room
+      name: Amelia's light
+    light.kitchen_lights_light_l1:
+      expose: true
+      room: Kitchen
+      name: Kitchen light
+    light.kitchen_lights_light_l2:
+      expose: true
+      room: Kitchen
+      name: Counter light
+    light.kitchen_lights:
+      expose: true
+      room: Kitchen
+      name: Kitchen lights
+    switch.living_room_lights_l1:
+      expose: true
+      room: Living room
+      name: Table light
+    switch.living_room_lights_l2:
+      expose: true
+      room: Living room
+      name: Living room light
+    switch.living_room_lights_l3:
+      expose: true
+      room: Living room
+      name: Sofa light
+    input_boolean.tv:
+      expose: true
+      room: Living room
+      name: TV
+    input_boolean.tv_toggle:
+      expose: true
+      room: Living room
+      name: Toggle TV
+    input_boolean.tv_tvp1:
+      expose: true
+      room: Living room
+      name: TVP1
+    input_boolean.tv_tvp2:
+      expose: true
+      room: Living room
+      name: TVP2
+    input_boolean.tv_polsat:
+      expose: true
+      room: Living room
+      name: Polsat
+    input_boolean.tv_tvn:
+      expose: true
+      room: Living room
+      name: TVN
+    input_boolean.tv_tvn_turbo:
+      expose: true
+      room: Living room
+      name: TVN Turbo
+    input_boolean.tv_polsat_music:
+      expose: true
+      room: Living room
+      name: Polsat Music
+    input_boolean.tv_eska:
+      expose: true
+      room: Living room
+      name: Eska
+    input_boolean.tv_canal_plus:
+      expose: true
+      room: Living room
+      name: Canal plus
+    input_boolean.tv_hbo:
+      expose: true
+      room: Living room
+      name: HBO
+    input_boolean.tv_volume_up:
+      expose: true
+      room: Living room
+      name: Tv volume up
+    input_boolean.tv_volume_down:
+      expose: true
+      room: Living room
+      name: Tv volume down
+    input_boolean.tv_volume_up_by_2:
+      expose: true
+      room: Living room
+      name: Tv volume up by 2
+    input_boolean.tv_volume_down_by_2:
+      expose: true
+      room: Living room
+      name: Tv volume down by 2
+    input_boolean.tv_source_tv:
+      expose: true
+      room: Living room
+      name: Tv source tv
+    input_boolean.tv_source_chromecast:
+      expose: true
+      room: Living room
+      name: Tv source chromecast
+    input_boolean.night_mode:
+      expose: true
+      room: Amelia's room
+      name: Night mode
+    input_boolean.sleeping_mode:
+      expose: true
+      room: Living room
+      name: Sleeping mode
+    switch.711315732cf432d1f59f:
+      expose: true
+      room: Balcony
+      name: Balcony light
+    climate.0x842e14fffee19a4b_climate:
+      expose: true
+      room: Living room
+      name: Living room thermostat
+    climate.0xec1bbdfffe8d6c88_climate:
+      expose: false
+    climate.0x804b50fffe4465b1:
+      expose: true
+      room: Bathroom
+      name: Bathroom thermostat
+    climate.0x847127fffebe00ed:
+      expose: true
+      room: Amelia's room
+      name: Amelia's thermostat
