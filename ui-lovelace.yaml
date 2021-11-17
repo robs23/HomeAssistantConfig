@@ -9,6 +9,8 @@ resources:
     type: module
   - url: /hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js
     type: js
+  - url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js
+    type: module
 title: Dom
 views:
   - path: default_view
@@ -498,6 +500,52 @@ views:
           - name: Clean Amelia's room
             service: script.amelias_cleaning
             icon: "mdi:unicorn"
+      - type: custom:xiaomi-vacuum-map-card
+        title: Odkurzanie
+        vacuum_platform: KrzysztofHajdamowicz/miio2
+        preset_name: Live map
+        entity: vacuum.lucy
+        map_source:
+          camera: camera.xiaomi_cloud_map_extractor
+        calibration_source:
+          camera: true
+        map_modes:
+          - template: vacuum_clean_zone
+          - template: vacuum_clean_segment
+            predefined_selections:
+              - id: 1
+                outline: [[ 21458, 32131 ], [ 24235, 32152 ], [ 24194, 27409 ], [ 23181, 27409 ], [ 23160, 28807 ], [ 21417, 28807 ]]
+                label:
+                  text: "Bedroom"
+                  x: 22932
+                  y: 30339
+                  offset_y: 35
+                icon:
+                  name: "mdi:bed"
+                  x: 22932
+                  y: 30339
+              - id: 2
+                outline: [[ 21478, 27237 ], [ 23048, 27250 ], [ 23061, 25655 ], [ 21478, 25680 ]]
+                label:
+                  text: "Bathroom"
+                  x: 22282
+                  y: 26496
+                  offset_y: 35
+                icon:
+                  name: "mdi:shower"
+                  x: 22282
+                  y: 26496
+              - id: 3
+                outline: [[ 30417, 29895 ], [ 30694, 29895 ], [ 30694, 30338 ], [ 31358, 30319 ], [ 33221, 29194 ], [ 33055, 28954 ], [ 34715, 28087 ], [ 36172, 27350 ], [ 36153, 25966 ], [ 35969, 25911 ], [ 35969, 25155 ], [ 34217, 25155 ], [ 34180, 26151 ], [ 31671, 26169 ], [ 31653, 25173 ], [ 30343, 25173 ]]
+                label:
+                  text: "Living room"
+                  x: 33036
+                  y: 27589
+                  offset_y: 35
+                icon:
+                  name: "mdi:television"
+                  x: 33036
+                  y: 27589
   - path: kitchen
     title: Kuchnia
     badges:

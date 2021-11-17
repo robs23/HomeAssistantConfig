@@ -20,8 +20,8 @@ lovelace:
 
 homeassistant:
   packages: !include_dir_named packages
-  external_url: external_url
-  internal_url: internal_url
+  external_url: !secret external_url
+  internal_url: !secret internal_url
 
 media_extractor:
 
@@ -121,6 +121,23 @@ vacuum:
     host: 192.168.0.106
     token: !secret lucy_token
     name: Lucy
+
+camera:
+  - platform: xiaomi_cloud_map_extractor
+    host: 192.168.0.106
+    token: !secret lucy_token
+    username: !secret xiaomi_username
+    password: !secret xiaomi_password
+    draw: ['all']
+    attributes:
+      - calibration_points    
+    map_transformation: 
+      scale: 1.5
+      trim:
+        top: 35
+        bottom: 42
+        left: 42
+        right: 32
 
 # Minix Smart Tv dongle
 binary_sensor:
