@@ -11,6 +11,8 @@ resources:
     type: js
   - url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js
     type: module
+  - url: /hacsfiles/lovelace-time-picker-card/time-picker-card.js
+    type: module
 title: Dom
 views:
   - path: default_view
@@ -513,17 +515,16 @@ views:
           - template: vacuum_clean_zone
           - template: vacuum_clean_segment
             predefined_selections:
-              - id: 1
-                outline: [[ 21458, 32131 ], [ 24235, 32152 ], [ 24194, 27409 ], [ 23181, 27409 ], [ 23160, 28807 ], [ 21417, 28807 ]]
+              - id: 10
+                outline: [[ 0.3617886143243898, 5.0666666675 ], [ -2.470731708046342, 5.003252033417073 ], [ -2.4284552853243904, 1.7056910611048783 ], [ 0.3617886143243898, 1.7479674838268302 ], [ 0.3617886143243898, 5.003252033417073 ]]
                 label:
-                  text: "Bedroom"
-                  x: 22932
-                  y: 30339
-                  offset_y: 35
+                  text: "Sypialnia"
+                  x: -0.8430894332512202
+                  y: 3.5235772381487807
                 icon:
                   name: "mdi:bed"
-                  x: 22932
-                  y: 30339
+                  x: -0.8853658559731712
+                  y: 4.1154471562560975
               - id: 2
                 outline: [[ 21478, 27237 ], [ 23048, 27250 ], [ 23061, 25655 ], [ 21478, 25680 ]]
                 label:
@@ -546,6 +547,7 @@ views:
                   name: "mdi:television"
                   x: 33036
                   y: 27589
+          - template: vacuum_follow_path
   - path: kitchen
     title: Kuchnia
     badges:
@@ -656,10 +658,22 @@ views:
                     - entity: input_boolean.away_mode_schedule_return
                       state: "on"
                   card:
-                    type: entities
-                    entities:
-                      - entity: input_datetime.away_mode_timeout
-                        name: Planowany powrót
+                    type: horizontal-stack
+                    cards:
+                      - type: entities
+                        entities:
+                          - entity: input_datetime.away_mode_timeout
+                            name: Planowany powrót
+                      - type: 'custom:time-picker-card'
+                        entity: input_datetime.away_mode_timeout
+                        hour_mode: 24
+                        link_values: true
+                        hide: 
+                          name: true
+                        layout:
+                          name: inside
+                          align_controls: center
+                          embedded: true
                 - type: entities
                   entities:
                     - entity: input_boolean.schedule_cleaning
