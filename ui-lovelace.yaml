@@ -13,6 +13,9 @@ resources:
     type: module
   - url: /hacsfiles/lovelace-time-picker-card/time-picker-card.js
     type: module
+  - url: /hacsfiles/lovelace-card-mod/card-mod.js
+    type: module
+
 title: Dom
 views:
   - path: default_view
@@ -661,9 +664,24 @@ views:
                     type: horizontal-stack
                     cards:
                       - type: entities
+                        name: Planowany powrót
                         entities:
                           - entity: input_datetime.away_mode_timeout
-                            name: Planowany powrót
+                            show_name: false
+                            card_mod:
+                              style: |
+                                ha-time-input {
+                                  display: none;
+                                }
+                                :host {
+                                  color: white;
+                                }
+                                hui-generic-entity-row {
+                                  margin-top: 25px;
+                                }
+                                hui-generic-entity-row state-badge {
+                                  color: white;
+                                }
                       - type: 'custom:time-picker-card'
                         entity: input_datetime.away_mode_timeout
                         hour_mode: 24

@@ -58,7 +58,7 @@ bedroom_cleaning:
       - 0
       - 1
       - 1
-      - 10
+      - "{{state_attr('variable.vacuum_room_numbers', 'bedroom')}}"
   mode: single
 hall_cleaning:
   alias: Hall cleaning

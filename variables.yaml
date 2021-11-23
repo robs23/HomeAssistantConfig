@@ -1,0 +1,12 @@
+vacuum_room_numbers:
+  name: Vacuum room numbers
+  attributes:
+    living_room: 11
+    kitchen: 13
+    bedroom: 10
+    hall: 12
+  restore: true
+
+vacuum_scheduled_rooms:
+  name: Vacuum scheduled rooms
+  value: ''
