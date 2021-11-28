@@ -76,14 +76,14 @@ spotify:
 #   sp_key: !secret spotcast_sp_key
 
 # Enigma2
-# enigma:
-#   devices:
-#     - host: 192.168.0.112
-#       port: 80
-#       name: Dreambox
-#       timeout: 20
-#       username: root
-#       picon: picon
+enigma:
+  devices:
+    - host: 192.168.0.112
+      port: 80
+      name: Dreambox
+      timeout: 20
+      username: root
+      picon: picon
 
 # notify:
 #   - platform: enigma
@@ -103,6 +103,7 @@ yeelight:
 media_player:
   - platform: enigma2
     host: 192.168.0.112
+    name: "Dreambox"
   - platform: androidtv
     host: 192.168.0.114 # IP of the Chromecast, insert yours here
     port: 5555 # defaults to 5555
@@ -181,6 +182,16 @@ binary_sensor:
 
 
 sensor:
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+      - type: disk_use
+      - type: disk_free
+      - type: memory_use_percent
+      - type: memory_use
+      - type: memory_free
+      - type: processor_use
+      - type: processor_temperature
   - platform: template
     sensors:
       weather_temperature:

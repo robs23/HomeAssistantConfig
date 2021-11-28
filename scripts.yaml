@@ -76,7 +76,7 @@ hall_cleaning:
       - 0
       - 1
       - 1
-      - 12
+      - "{{state_attr('variable.vacuum_room_numbers', 'hall')}}"
   mode: single
 amelias_cleaning:
   alias: Amelia's cleaning
@@ -112,7 +112,7 @@ kitchen_cleaning:
       - 0
       - 1
       - 1
-      - 13
+      - "{{state_attr('variable.vacuum_room_numbers', 'kitchen')}}"
   mode: single
 living_room_cleaning:
   alias: Living room cleaning
@@ -130,7 +130,7 @@ living_room_cleaning:
       - 0
       - 1
       - 1
-      - 11
+      - "{{state_attr('variable.vacuum_room_numbers', 'living_room')}}"
   mode: single
 
 vacuum_follow_path:
