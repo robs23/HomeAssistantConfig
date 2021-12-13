@@ -27,10 +27,17 @@ views:
     badges:
       - entity: sun.sun
       - entity: sensor.weather_temperature
+        name: "Na zewnątrz"
+      - entity: sensor.living_room_temperature
+        name: "Salon"
       - entity: sensor.0x00158d00044c015e_temperature
         name: "Sypialnia"
       - entity: sensor.0x00158d00044bc01c_temperature
         name: "Amelia"
+      - entity: sensor.bathroom_temperature
+        name: "Łazienka"
+      - entity: sensor.kitchen_window_temperature
+        name: "Kuchnia"
       - entity: input_boolean.heating_season
         name: "Sezon grzewczy"
         icon: mdi:radiator
@@ -573,6 +580,10 @@ views:
     title: Kuchnia
     badges:
     cards:
+      - type: entity
+        entity: binary_sensor.kitchen_window_contact
+        name: Okno
+        icon: mdi:window-open-variant
       - type: entities
         title: "Światło"
         entities:
@@ -761,6 +772,8 @@ views:
         entities:
           - entity: sensor.0x00158d0005729974_battery
             name: "Czujnik ruchu u Amelii"
+          - entity: sensor.amelia_motion_sensor_2_battery
+            name: "Czujnik ruchu u Amelki (pod oknem)"
           - entity: sensor.0x00158d00044bc01c_battery
             name: "Czujnik temperatury u Amelii"
           - entity: sensor.0x00158d00057280cd_battery
@@ -790,6 +803,8 @@ views:
                 to: 100
           - entity: sensor.0x00158d000395bc64_battery
             name: "Przycisk w kuchni"
+          - entity: sensor.kitchen_window_battery
+            name: "Czujnik okna w kuchni"
 
 group:
   lights:

@@ -52,6 +52,9 @@
   sleeping_mode:
     name: Sleeping mode
     initial: off
+  nap_time:
+    name: Nap time
+    initial: off
   night_mode:
     name: Night mode
     initial: off

@@ -109,6 +109,10 @@
       expose: true
       room: Living room
       name: Sleeping mode
+    input_boolean.nap_time:
+      expose: true
+      room: Living room
+      name: Nap time
     switch.711315732cf432d1f59f:
       expose: true
       room: Balcony

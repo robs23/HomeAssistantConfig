@@ -196,5 +196,13 @@ sensor:
     sensors:
       weather_temperature:
         friendly_name: "Temperatura"
-        unit_of_measurement: "degrees"
+        unit_of_measurement: "°C"
         value_template: "{{ state_attr('weather.dom', 'temperature') }}"
+      bathroom_temperature:
+        friendly_name: "Temperatura w łazience"
+        unit_of_measurement: "°C"
+        value_template: "{{ state_attr('climate.thermostat_in_bathroom', 'current_temperature') }}"
+      living_room_temperature:
+        friendly_name: "Temperatura w salonie"
+        unit_of_measurement: "°C"
+        value_template: "{{ state_attr('climate.0x842e14fffee19a4b_climate', 'current_temperature') }}"
