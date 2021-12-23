@@ -39,7 +39,14 @@ light:
     entities:
       - light.kitchen_lights_light_l1
       - light.kitchen_lights_light_l2
+      - light.shelly_shsw_1_c45bbe76cec1
 
+shelly:
+  discovery: true
+  devices:
+    - id: "C45BBE76CEC1"
+      name: Kitchen strip
+      light_switch: true
 
 timer:
   away_mode_setting_timer:

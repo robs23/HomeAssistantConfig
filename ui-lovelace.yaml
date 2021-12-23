@@ -38,9 +38,9 @@ views:
         name: "Łazienka"
       - entity: sensor.kitchen_window_temperature
         name: "Kuchnia"
-      - entity: input_boolean.heating_season
-        name: "Sezon grzewczy"
-        icon: mdi:radiator
+      - entity: input_boolean.nap_time
+        name: "Drzemka"
+        icon: mdi:sleep
     cards:
       - type: entities
         title: "Światło"
@@ -67,6 +67,8 @@ views:
             name: Kuchnia
           - entity: light.kitchen_lights_light_l2
             name: Kuchnia blat
+          - entity: light.shelly_shsw_1_c45bbe76cec1
+            name: Listwa
           - type: section
             label: Balkon
           - entity: switch.711315732cf432d1f59f
@@ -591,6 +593,8 @@ views:
             name: Głowne
           - entity: light.kitchen_lights_light_l2
             name: Blat
+          - entity: light.shelly_shsw_1_c45bbe76cec1
+            name: Listwa
       - type: custom:mini-media-player
         entity: media_player.kitchens_speaker
         artwork: cover
