@@ -1,0 +1,174 @@
+path: maintenance
+title: Utrzymanie
+badges:
+  - entity: sensor.disk_use_percent
+    name: "Zapełnienie dysku %"
+  - entity: sensor.disk_use
+    name: "Zapełnienie dysku GB"
+  - entity: sensor.disk_free
+    name: "Pozostało GB"
+  - entity: sensor.memory_use_percent
+    name: "Obciążenie RAM %"
+  - entity: sensor.processor_use_percent
+    name: "Obciążenie procesora %"
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        title: Tryb nieobecności
+        cards: 
+          - type: entities
+            entities:
+              - entity: input_boolean.away_mode
+                name: Tryb nieobecności
+                icon: mdi:island
+          - type: conditional
+            conditions:
+              - entity: input_boolean.away_mode
+                state: "on"
+              - entity: timer.away_mode_setting_timer
+                state: "active"
+            card:
+              type: custom:timer-bar-card
+              entity: timer.away_mode_setting_timer
+              bar_direction: rtl
+              bar_foreground: '#eee'
+              bar_background: 'var(--mdc-theme-primary, #6200ee)'
+              modifications:
+                - elapsed: 70%
+                  bar_background: orange
+                - elapsed: 90%
+                  bar_background: red
+          - type: conditional
+            conditions:
+              - entity: input_boolean.away_mode
+                state: "on"
+              - entity: timer.away_mode_timeout_timer
+                state: "active"
+            card:
+              type: custom:timer-bar-card
+              entity: timer.away_mode_timeout_timer
+              bar_direction: rtl
+              bar_foreground: '#eee'
+              bar_background: 'var(--mdc-theme-primary, #6200ee)'
+              modifications:
+                - elapsed: 70%
+                  bar_background: orange
+                - elapsed: 90%
+                  bar_background: red
+              name: Koniec za
+      - type: conditional
+        conditions:
+          - entity: input_boolean.away_mode
+            state: "on"
+          - entity: timer.away_mode_setting_timer
+            state: "active"
+        card:
+          type: custom:vertical-stack-in-card
+          cards:
+            - type: entities
+              entities:
+                - entity: input_boolean.away_mode_turn_off_heating
+                  name: Wyłącz ogrzewanie
+                  icon: mdi:thermometer
+                - entity: input_boolean.away_mode_schedule_return
+                  name: Zaplanuj powrót
+                  icon: mdi:clock
+            - type: conditional
+              conditions:
+                - entity: input_boolean.away_mode_schedule_return
+                  state: "on"
+              card:
+                type: horizontal-stack
+                cards:
+                  - type: entities
+                    name: Planowany powrót
+                    entities:
+                      - entity: input_datetime.away_mode_timeout
+                        show_name: false
+                        card_mod:
+                          style: |
+                            ha-time-input {
+                              display: none;
+                            }
+                            :host {
+                              color: white;
+                            }
+                            hui-generic-entity-row {
+                              margin-top: 25px;
+                            }
+                            hui-generic-entity-row state-badge {
+                              color: white;
+                            }
+                  - type: 'custom:time-picker-card'
+                    entity: input_datetime.away_mode_timeout
+                    hour_mode: 24
+                    link_values: true
+                    hide: 
+                      name: true
+                    layout:
+                      name: inside
+                      align_controls: center
+                      embedded: true
+            - type: entities
+              entities:
+                - entity: input_boolean.schedule_cleaning
+                  name: Poodkurzaj
+                  icon: mdi:robot-vacuum-variant
+            - type: conditional
+              conditions: 
+                - entity: input_boolean.schedule_cleaning
+                  state: "on"
+              card:
+                type: entities
+                entities:
+                  - entity: input_boolean.schedule_cleaning_kitchen
+                    name: Kuchnia
+                    icon: mdi:silverware-fork-knife
+                  - entity: input_boolean.schedule_cleaning_living_room
+                    name: Salon
+                    icon: mdi:sofa
+                  - entity: input_boolean.schedule_cleaning_bedroom
+                    name: Sypialnia
+                    icon: mdi:bed
+                  - entity: input_boolean.schedule_cleaning_hall
+                    name: Korytarz
+                    icon: mdi:shoe-print
+  - type: custom:battery-state-card
+    title: "Baterie"
+    entities:
+      - entity: sensor.0x00158d0005729974_battery
+        name: "Czujnik ruchu u Amelii"
+      - entity: sensor.amelia_motion_sensor_2_battery
+        name: "Czujnik ruchu u Amelki (pod oknem)"
+      - entity: sensor.0x00158d00044bc01c_battery
+        name: "Czujnik temperatury u Amelii"
+      - entity: sensor.0x00158d00057280cd_battery
+        name: "Czujnik ruchu w Salonie"
+      - entity: sensor.0x00158d00044c015e_battery
+        name: "Czujnik temperatury w Sypialni"
+      - entity: binary_sensor.thermostat_in_living_room_battery_low
+        name: "Głowica w Salonie"
+        state_map:
+          - from: "on"
+            to: 15
+          - from: "off"
+            to: 100
+      - entity: binary_sensor.thermostat_in_amelias_room_battery_low
+        name: "Głowica u Amelki"
+        state_map:
+          - from: "on"
+            to: 15
+          - from: "off"
+            to: 100
+      - entity: binary_sensor.thermostat_in_bathroom_battery_low
+        name: "Głowica w łazience"
+        state_map:
+          - from: "on"
+            to: 15
+          - from: "off"
+            to: 100
+      - entity: sensor.0x00158d000395bc64_battery
+        name: "Przycisk w kuchni"
+      - entity: sensor.kitchen_window_battery
+        name: "Czujnik okna w kuchni"

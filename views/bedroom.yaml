@@ -1,0 +1,9 @@
+path: bedroom
+title: Sypialnia
+badges:
+  - entity: sensor.0x00158d00044c015e_temperature
+    name: "Temperatura"
+  - entity: sensor.0x00158d00044c015e_humidity
+    name: "Wilgotność"
+  - entity: sensor.0x00158d00044c015e_pressure
+    name: "Ciśnienie"

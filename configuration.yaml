@@ -54,7 +54,10 @@ timer:
     duration: "00:05:00"
   away_mode_timeout_timer:
     name: Koniec za
-  
+  kitchen_window_timer:
+    name: Kitchen window timer
+    duration: "00:20:00"
+
 input_datetime:
   away_mode_timeout:
     name: Away mode timeout

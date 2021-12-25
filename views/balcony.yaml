@@ -1,0 +1,10 @@
+path: balcony
+title: Balkon
+badges:
+  - entity: sun.sun
+  - entity: sensor.weather_temperature
+cards:
+  - type: entities
+    entities:
+      - entity: switch.711315732cf432d1f59f
+        name: Światło

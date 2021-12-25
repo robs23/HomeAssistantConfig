@@ -1,0 +1,64 @@
+path: hall
+title: Korytarz
+badges:
+cards:
+  - type: custom:xiaomi-vacuum-map-card
+    title: Odkurzanie
+    vacuum_platform: KrzysztofHajdamowicz/miio2
+    map_locked: true
+    preset_name: Live map
+    entity: vacuum.lucy
+    map_source:
+      camera: camera.xiaomi_cloud_map_extractor
+    calibration_source:
+      camera: true
+    map_modes:
+      - template: vacuum_clean_zone
+      - template: vacuum_clean_segment
+        predefined_selections:
+          # - id: "{{state_attr('variable.vacuum_room_numbers', 'bedroom')}}"
+          - id: 10
+            outline: [[ 0.3617886143243898, 5.0666666675 ], [ -2.470731708046342, 5.003252033417073 ], [ -2.4284552853243904, 1.7056910611048783 ], [ 0.3617886143243898, 1.7479674838268302 ], [ 0.3617886143243898, 5.003252033417073 ]]
+            label:
+              text: "Sypialnia"
+              x: -0.8430894332512202
+              y: 3.5235772381487807
+            icon:
+              name: "mdi:bed"
+              x: -0.8853658559731712
+              y: 4.1154471562560975
+          # - id: "{{state_attr('variable.vacuum_room_numbers', 'hall')}}"
+          - id: 12
+            outline: [[ -0.4308943117121955, 1.6845528497439028 ], [ -0.4308943117121955, -1.8455284475390235 ], [ 1.8308943039121948, -1.782113813456097 ], [ 1.8308943039121948, 1.7056910611048783 ], [ -0.45203252307317143, 1.6845528497439028 ]]
+            label:
+              text: "Korytarz"
+              x: 0.7528455245024386
+              y: -0.21788617274390187
+              offset_y: 35
+            icon:
+              name: "mdi:shoe-print"
+              x: 0.7739837358634141
+              y: 0.07804878630975676
+          - id: 11
+            outline: [[ 0.816260158585365, 5.024390244778049 ], [ 0.7317073131414631, 1.8113821179097567 ], [ 6.6292682828536575, 1.8536585406317077 ], [ 6.460162591965854, 5.172357724304878 ], [ 0.816260158585365, 5.045528456139024 ]]
+            label:
+              text: "Salon"
+              x: 3.796747960482926
+              y: 3.758536588207317
+              offset_y: 35
+            icon:
+              name: "mdi:television"
+              x: 3.839024383204878
+              y: 3.9886178880902445
+          - id: 13
+            outline: [[ 1.8308943039121948, -0.9999999930999994 ], [ 1.8308943039121948, -2.4162601542853643 ], [ 4.79024389444878, -2.43739836564634 ], [ 4.747967471726828, -0.9788617817390239 ], [ 1.8731707266341457, -1.0422764158219504 ]]
+            label:
+              text: "Kuchnia"
+              x: 3.39512194462439
+              y: -1.424390236178048
+              offset_y: 35
+            icon:
+              name: "mdi:silverware-fork-knife"
+              x: 3.4162601559853654
+              y: -1.3593495862365845
+      - template: vacuum_follow_path
