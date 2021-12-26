@@ -1,0 +1,83 @@
+path: amelia
+title: Amelia
+badges:
+  - entity: sensor.0x00158d00044bc01c_temperature
+    name: "Amelia"
+  - entity: sensor.0x00158d00044bc01c_humidity
+    name: "Wilgotność"
+  - entity: sensor.0x00158d00044bc01c_pressure
+    name: "Ciśnienie"
+cards:
+  - type: entities
+    entities:
+      - entity: input_boolean.night_mode
+        name: Tryb nocny
+        icon: mdi:sleep
+  - type: entities
+    entities:
+      - entity: light.0xbc33acfffe6d82d0_light
+        name: Sufit
+  - type: custom:mini-media-player
+    entity: media_player.amelias_speaker
+    artwork: cover
+    icon: mdi:google-home
+    source: icon
+    shortcuts:
+      columns: 2 # Max buttons per row
+      rows: 3
+      buttons:
+        # Start predefined playlist
+        - icon: mdi:baby-face
+          type: service
+          id: spotcast.start
+          data:
+            entity_id: media_player.amelias_speaker
+            uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
+            random_song: true
+        - icon: mdi:sleep
+          media_content_type: playlist
+          media_content_id: "spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP"
+        - id: "http://31.192.216.10/rmf_fm"
+          name: RMF FM
+          app_name: RMF FM
+          type: music
+          icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+          entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+          entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
+        - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+          name: RadioZET
+          type: music
+  - type: custom:scheduler-card
+    discover_existing: false
+    display_options:
+      primary_info:
+        - "{name}: {action}"
+      secondary_info: relative-time
+      icon: "hass:action"
+    customize:
+      climate.thermostat_in_amelias_room:
+        name: "Termostat"
+        icon: thermometer
+        actions:
+          - service: climate.set_temperature
+            variables:
+              temperature:
+                name: "Temperatura"
+                min: 5
+                max: 30
+                step: 1
+            icon: thermometer
+            name: "Ustaw temperature"
+    groups:
+      - thermostats:
+          domains: [climate]
+          icon: home-thermometer-outline
+          actions:
+            - icon: thermometer-chevron-up
+              service: set_temperature
+        name: Termostat
+        include: 
+          - climate.thermostat_in_amelias_room
+  - type: thermostat
+    entity: climate.thermostat_in_amelias_room
+    name: Termostat

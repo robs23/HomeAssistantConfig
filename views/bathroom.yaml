@@ -1,0 +1,37 @@
+path: bathroom
+title: Łazienka
+cards:
+  - type: custom:scheduler-card
+    discover_existing: false
+    display_options:
+      primary_info:
+        - "{name}: {action}"
+      secondary_info: relative-time
+      icon: "hass:action"
+    customize:
+      climate.thermostat_in_bathroom:
+        name: "Termostat"
+        icon: thermometer
+        actions:
+          - service: climate.set_temperature
+            variables:
+              temperature:
+                name: "Temperatura"
+                min: 5
+                max: 30
+                step: 1
+            icon: thermometer
+            name: "Ustaw temperature"
+    groups:
+      - thermostats:
+          domains: [climate]
+          icon: home-thermometer-outline
+          actions:
+            - icon: thermometer-chevron-up
+              service: set_temperature
+        name: Termostat
+        include: 
+          - climate.thermostat_in_bathroom
+  - type: thermostat
+    entity: climate.thermostat_in_bathroom
+    name: Termostat
