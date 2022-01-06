@@ -8,3 +8,16 @@ cards:
     entities:
       - entity: switch.711315732cf432d1f59f
         name: Światło
+  - type: custom:scheduler-card
+    discover_existing: false
+    display_options:
+      primary_info:
+        - "{name}: {action}"
+      secondary_info: relative-time
+      icon: "hass:action"
+    groups:
+      - lights:
+          domains: [light]
+        name: Lampki
+        include: 
+          - switch.711315732cf432d1f59f
