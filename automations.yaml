@@ -1,1 +1,11 @@
-[]
+  - alias: "Hall switch double"
+    trigger:
+      platform: event
+      event_type: shellyforhass.click
+      event_data:
+        click_type: long #single, double, triple
+    action:
+      - service: light.toggle
+        target:
+          entity_id:
+            - light.kitchen_lights_light_l1

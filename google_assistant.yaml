@@ -131,3 +131,11 @@
       expose: true
       room: Amelia's room
       name: Amelia's thermostat
+    light.shelly_shsw_1_c45bbe75c8dd:
+      expose: true
+      room: Hall
+      name: Hall light
+    light.shelly_shsw_1_c45bbe76cec1:
+      expose: true
+      room: Kitchen
+      name: Kitchen strip

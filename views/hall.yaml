@@ -2,6 +2,11 @@ path: hall
 title: Korytarz
 badges:
 cards:
+  - type: entities
+    title: "Światło"
+    entities:
+      - entity: light.shelly_shsw_1_c45bbe75c8dd
+        name: Sufit
   - type: custom:xiaomi-vacuum-map-card
     title: Odkurzanie
     vacuum_platform: KrzysztofHajdamowicz/miio2

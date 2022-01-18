@@ -46,6 +46,10 @@ cards:
       - entity: light.shelly_shsw_1_c45bbe76cec1
         name: Listwa
       - type: section
+        label: Korytarz
+      - entity: light.shelly_shsw_1_c45bbe75c8dd
+        name: Sufit
+      - type: section
         label: Balkon
       - entity: switch.711315732cf432d1f59f
         name: Balkon
