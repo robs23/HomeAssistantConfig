@@ -26,6 +26,8 @@ tts
 custom_components
 scripts
 secrets.yaml
+known_devices.yaml
+trusted_proxies.yaml
 WIP*.py
 panels
 python_scripts/shellies_discovery.py

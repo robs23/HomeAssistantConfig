@@ -1,11 +1,12 @@
 vacuum_room_numbers:
   name: Vacuum room numbers
   attributes:
-    living_room: 11
-    kitchen: 13
-    bedroom: 10
-    hall: 12
-  restore: true
+    toilet: 10
+    hall: 13
+    living_room: 12
+    bedroom: 11
+    kitchen: 14
+  restore: false
 
 vacuum_scheduled_rooms:
   name: Vacuum scheduled rooms

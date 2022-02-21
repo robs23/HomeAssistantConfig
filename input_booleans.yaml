@@ -100,3 +100,9 @@
     name: Schedule cleaning hall
   away_mode_set:
     name: Away mode set
+  fridge_samsung:
+    name: Samsung fridge
+    initial: on
+  power_off_mode:
+    name: Power Off Mode
+    initial: off
