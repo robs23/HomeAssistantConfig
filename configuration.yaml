@@ -54,8 +54,6 @@ shelly:
       name: Hall light
       light_switch: true
 
-ble_monitor:
-
 device_tracker:
   - platform: bluetooth_tracker
   - platform: nmap_tracker
