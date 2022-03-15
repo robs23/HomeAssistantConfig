@@ -2,6 +2,10 @@ path: hall
 title: Korytarz
 badges:
 cards:
+  - type: entity
+    entity: binary_sensor.main_door_contact
+    name: Drzwi
+    icon: mdi:door-open
   - type: entities
     title: "Światło"
     entities:

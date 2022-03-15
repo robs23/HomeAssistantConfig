@@ -56,17 +56,19 @@ shelly:
 
 device_tracker:
   - platform: bluetooth_tracker
+    consider_home: 300
   - platform: nmap_tracker
-    hosts: 
-      - 192.168.0.105
-      
+    consider_home: 300
+    hosts:
+      - 192.168.0.117
+
   # - platform: bluetooth_le_tracker
   # - platform: tplink_router
   #   host: 192.168.0.1
   #   username: !secret tplink_user
   #   password: !secret tplink_password
   #   interval_seconds: 60
-    
+
 timer:
   away_mode_setting_timer:
     name: Start za
@@ -164,10 +166,10 @@ camera:
     token: !secret lucy_token
     username: !secret xiaomi_username
     password: !secret xiaomi_password
-    draw: ['all']
+    draw: ["all"]
     attributes:
-      - calibration_points    
-    map_transformation: 
+      - calibration_points
+    map_transformation:
       scale: 1.5
       trim:
         top: 35
@@ -209,8 +211,19 @@ binary_sensor:
           minutes: 3
         value_template: "{{states('sensor.0x588e81fffed97f99_power') | float < 44 and states('sensor.0x588e81fffed97f99_power') | float > 10 }}"
 
-
 sensor:
+  - platform: mqtt_room
+    device_id: "iBeacon:e60ec4cf-2ecd-4d3b-b16a-aa852bed8b19-100-1"
+    name: "Robert phone"
+    state_topic: "espresense/devices/iBeacon:e60ec4cf-2ecd-4d3b-b16a-aa852bed8b19-100-1"
+    timeout: 60
+    away_timeout: 120 # number of seconds after which the enitity will get status not_home
+  - platform: mqtt_room
+    device_id: "apple:1005:9-12"
+    name: "Dominika phone"
+    state_topic: "espresense/devices/apple:1005:9-12"
+    timeout: 60
+    away_timeout: 120 # number of seconds after which the enitity will get status not_home
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -235,6 +248,14 @@ sensor:
         friendly_name: "Temperatura w salonie"
         unit_of_measurement: "°C"
         value_template: "{{ state_attr('climate.0x842e14fffee19a4b_climate', 'current_temperature') }}"
+      robert_phone_distance:
+        friendly_name: "Odległość telefonu Roberta"
+        unit_of_measurement: "m"
+        value_template: "{{ state_attr('sensor.robert_phone', 'distance') }}"
+      dominika_phone_distance:
+        friendly_name: "Odległość telefonu Dominiki"
+        unit_of_measurement: "m"
+        value_template: "{{ state_attr('sensor.dominika_phone', 'distance') }}"
   - platform: powercalc
     entity_id: switch.living_room_lights_l1
     name: Table light

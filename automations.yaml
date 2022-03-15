@@ -5,6 +5,14 @@
       event_data:
         click_type: long #single, double, triple
     action:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: input_boolean.power_off_mode
+            state: "on"
+          sequence:
+            - service: input_boolean.turn_off
+              entity_id: input_boolean.power_off_mode
       - service: input_boolean.turn_on
         target:
           entity_id:

@@ -12,6 +12,18 @@ badges:
   - entity: sensor.processor_use_percent
     name: "Obciążenie procesora %"
 cards:
+  - type: sensor
+    entity: sensor.robert_phone
+    name: Robert phone
+  - type: sensor
+    entity: sensor.dominika_phone
+    name: Dominika phone
+  - type: sensor
+    entity: sensor.robert_phone_distance
+    name: Robert phone distance
+  - type: sensor
+    entity: sensor.dominika_phone_distance
+    name: Dominika phone distance
   - type: custom:vertical-stack-in-card
     cards:
       - type: horizontal-stack
