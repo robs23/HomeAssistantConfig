@@ -1,19 +1,209 @@
-  - alias: "Hall switch long"
-    trigger:
-      platform: event
-      event_type: shellyforhass.click
-      event_data:
-        click_type: long #single, double, triple
-    action:
-      - choose:
-        - conditions:
-          - condition: state
-            entity_id: input_boolean.power_off_mode
-            state: "on"
-          sequence:
-            - service: input_boolean.turn_off
-              entity_id: input_boolean.power_off_mode
-      - service: input_boolean.turn_on
-        target:
-          entity_id:
-            - input_boolean.power_off_mode
+- alias: Hall switch long
+  trigger:
+    platform: event
+    event_type: shellyforhass.click
+    event_data:
+      click_type: long
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.power_off_mode
+        state: 'on'
+      sequence:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.power_off_mode
+  - service: input_boolean.turn_on
+    target:
+      entity_id:
+      - input_boolean.power_off_mode
+  id: bc41257776114a15bd6b1987486eae4e
+- id: '1649360752443'
+  alias: Romantic scene on
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.romantic_scene_toggle
+    to: 'on'
+    from: 'off'
+  condition: []
+  action:
+  - service: scene.create
+    data:
+      scene_id: living_room_snapshot
+      snapshot_entities: light.tv_lights
+  - service: scene.turn_on
+    data:
+      transition: 4
+    target:
+      entity_id: scene.romantic
+  - service: spotcast.start
+    data:
+      entity_id: media_player.photo_frame
+      uri: spotify:playlist:1tJ1hLKSrihE72jetCGWuN
+      start_volume: 30
+  mode: single
+- id: '1649360912116'
+  alias: Romantic scene off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.romantic_scene_toggle
+    from: 'on'
+    to: 'off'
+  condition: []
+  action:
+  - service: scene.turn_on
+    data:
+      transition: 3
+    target:
+      entity_id: scene.living_room_snapshot
+  - service: media_player.media_stop
+    data: {}
+    target:
+      device_id: 94da916924a046809b76087edf49f76a
+  mode: single
+- id: '1649361297073'
+  alias: Scene switcher 1_double
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: 1_double
+  condition: []
+  action:
+  - service: input_boolean.toggle
+    data: {}
+    target:
+      entity_id: input_boolean.romantic_scene_toggle
+  mode: single
+- id: '1649433276343'
+  alias: x
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: 2_double
+  condition:
+  - condition: template
+    value_template: '{{ is_state_attr(''light.tv_lights'' , ''rgb_color'' , (255,
+      223, 255)) }}'
+  action:
+  - service: light.turn_on
+    data:
+      rgb_color: 255,204,163
+    target:
+      device_id: 978be388bfe1d79cadc16c98d01f217f
+  - service: light.turn_on
+    data: {}
+    target:
+      device_id: 62cf9bd518451978b759077e1090a4a3
+  mode: single
+- id: '1650305894381'
+  alias: Termostaty 5:30
+  description: ''
+  trigger:
+  - platform: time
+    at: 05:30:00
+  condition: []
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 30
+    target:
+      device_id:
+      - ae5ed2a21c6130481c7fd097af9f2d15
+      - b1b2f4ad84544ff278bcfee87fb6cec0
+  mode: single
+- id: '1650306098392'
+  alias: Termostaty 7:00
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:10:00
+  condition: []
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 16
+    target:
+      device_id:
+      - b1b2f4ad84544ff278bcfee87fb6cec0
+      - ae5ed2a21c6130481c7fd097af9f2d15
+  mode: single
+- id: '1650306145051'
+  alias: Termostaty 14:30
+  description: ''
+  trigger:
+  - platform: time
+    at: '14:30:00'
+  condition: []
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 25
+    target:
+      device_id:
+      - b1b2f4ad84544ff278bcfee87fb6cec0
+      - ae5ed2a21c6130481c7fd097af9f2d15
+      - 31b2dceb69fbe5d6e0991719d171ff81
+  mode: single
+- id: '1650306201423'
+  alias: Termostaty 17:30
+  description: ''
+  trigger:
+  - platform: time
+    at: '17:30:00'
+  condition: []
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 30
+    target:
+      device_id:
+      - b1b2f4ad84544ff278bcfee87fb6cec0
+      - ae5ed2a21c6130481c7fd097af9f2d15
+  mode: single
+- id: '1650306237128'
+  alias: Termostaty 19:30
+  description: ''
+  trigger:
+  - platform: time
+    at: '19:30:00'
+  condition: []
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 16
+    target:
+      device_id:
+      - b1b2f4ad84544ff278bcfee87fb6cec0
+      - ae5ed2a21c6130481c7fd097af9f2d15
+      - 31b2dceb69fbe5d6e0991719d171ff81
+  mode: single
+- id: '1650795100896'
+  alias: Scene switcher 2_double
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: 2_double
+  condition: []
+  action:
+  - service: rest_command.assistant_relay
+    data:
+      command: Hello
+  mode: single
+- id: '1650797401027'
+  alias: Scene switcher 3_double
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.scene_switcher_action
+    to: 3_double
+  condition: []
+  action:
+  - service: rest_command.assistant_relay
+    data:
+      command: Toggle tv lights
+  mode: single

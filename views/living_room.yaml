@@ -52,6 +52,8 @@ cards:
         name: Front
       - entity: switch.living_room_lights_l3
         name: Sofa
+      - entity: input_boolean.stripe
+        name: Listwa LED
   - type: entities
     entities:
       - entity: input_boolean.tv

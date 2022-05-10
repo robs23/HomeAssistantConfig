@@ -1,0 +1,80 @@
+- id: '1648930835863'
+  name: Romantic
+  entities:
+    light.tv_lights:
+      min_mireds: 153
+      max_mireds: 588
+      effect_list:
+      - Strobe color
+      - Police
+      - Christmas
+      - RGB
+      - Random Loop
+      - Fast Random Loop
+      - LSD
+      - Slowdown
+      - Night Mode
+      - Date Night
+      - Movie
+      - Sunrise
+      - Sunset
+      - Romance
+      - Happy Birthday
+      - Disco
+      - Strobe epilepsy!
+      - Alarm
+      - Police2
+      - WhatsApp
+      - Facebook
+      - Twitter
+      - Home
+      - Candle Flicker
+      - Slow Temp
+      - Stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      - rgb
+      color_mode: rgb
+      brightness: 59
+      hs_color:
+      - 300
+      - 12.549
+      rgb_color:
+      - 255
+      - 223
+      - 255
+      xy_color:
+      - 0.335
+      - 0.294
+      flowing: false
+      music_mode: false
+      friendly_name: Tv lights
+      supported_features: 44
+      state: 'on'
+    switch.living_room_lights_l1:
+      linkquality: 97
+      state_l1: 'OFF'
+      state_l2: 'OFF'
+      state_l3: 'OFF'
+      friendly_name: living_room_lights_l1
+      state: 'off'
+    switch.living_room_lights_l2:
+      linkquality: 97
+      state_l1: 'OFF'
+      state_l2: 'OFF'
+      state_l3: 'OFF'
+      friendly_name: living_room_lights_l2
+      state: 'off'
+    switch.living_room_lights_l3:
+      linkquality: 97
+      state_l1: 'OFF'
+      state_l2: 'OFF'
+      state_l3: 'OFF'
+      friendly_name: living_room_lights_l3
+      state: 'off'
+    input_boolean.tv:
+      editable: false
+      friendly_name: TV
+      state: 'off'
+  icon: mdi:heart

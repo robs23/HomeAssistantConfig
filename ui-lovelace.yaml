@@ -1,6 +1,8 @@
 resources:
-  - url: /local/mini-media-player-bundle.js?v=1.9.1
+  - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js?v=1.16.2
     type: module
+#   - url: /local/mini-media-player-bundle.js?v=1.9.1
+#     type: module
   - url: /local/vacuum-card.js
     type: module
   - url: /local/battery-state-card.js
@@ -18,6 +20,12 @@ resources:
   - url: /hacsfiles/flipdown-timer-card/flipdown-timer-card.js
     type: module
   - url: /hacsfiles/timer-bar-card/timer-bar-card.js
+    type: module
+  - url: /hacsfiles/button-card/button-card.js
+    type: module
+  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+    type: module
+  - url: /hacsfiles/my-cards/my-cards.js
     type: module
 
 title: Dom

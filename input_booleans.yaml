@@ -106,3 +106,8 @@
   power_off_mode:
     name: Power Off Mode
     initial: off
+  stripe:
+    name: Stripe
+    initial: off
+  romantic_scene_toggle:
+    name: Romantic scene toggle

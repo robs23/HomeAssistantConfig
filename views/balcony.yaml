@@ -9,7 +9,7 @@ cards:
       - entity: switch.711315732cf432d1f59f
         name: Światło
   - type: custom:scheduler-card
-    discover_existing: false
+    discover_existing: true
     display_options:
       primary_info:
         - "{name}: {action}"
