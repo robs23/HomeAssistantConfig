@@ -4,6 +4,7 @@ Living_room_lights:
     - switch.living_room_lights_l1
     - switch.living_room_lights_l2
     - switch.living_room_lights_l3
+    - light.tv_lights
 
 Family:
   name: Family

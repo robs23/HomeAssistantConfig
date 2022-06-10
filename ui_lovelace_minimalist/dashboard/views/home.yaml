@@ -1,7 +1,7 @@
 title: "Home"
 path: "Home"
 cards:
-  - type: 'custom:button-card'
+  - type: "custom:button-card"
     template: card_esh_welcome
     triggers_update: "input_boolean.minimalist_dropdown"
     variables:
@@ -32,3 +32,92 @@ cards:
         icon: "mdi:flask"
         name: Lab
         color: "red"
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_person
+        variables:
+          ulm_card_person_entity: person.robert
+          ulm_card_person_use_entity_picture: true
+          ulm_card_person_zone1: zone.work
+          ulm_card_person_zone2: zone.school
+      - type: "custom:button-card"
+        template: card_person
+        variables:
+          ulm_card_person_entity: person.dominika
+          ulm_card_person_use_entity_picture: true
+          ulm_card_person_zone1: zone.work
+          ulm_card_person_zone2: zone.school
+  - type: "custom:button-card"
+    template: card_title
+    name: Pokoje
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Kuchnia
+        entity: light.kitchen_lights
+        icon: mdi:silverware-fork-knife
+        tap_action:
+          action: navigate
+          navigation_path: "kitchen"
+        label: '[[[ return states["sensor.kitchen_window_temperature"].state + "°C" ]]]'
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Salon
+        entity: group.living_room_lights
+        icon: mdi:sofa
+        tap_action:
+          action: navigate
+          navigation_path: "living_room"
+        label: '[[[ return states["sensor.living_room_temperature"].state + "°C" ]]]'
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Amelia
+        entity: light.0xbc33acfffe6d82d0_light
+        icon: mdi:teddy-bear
+        tap_action:
+          action: navigate
+          navigation_path: "amelia"
+        label: '[[[ return states["sensor.0x00158d00044bc01c_temperature"].state + "°C" ]]]'
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Łazienka
+        entity: light.bathroom_light
+        icon: mdi:shower
+        tap_action:
+          action: navigate
+          navigation_path: "bathroom"
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C" ]]]'
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Korytarz
+        entity: light.shelly_shsw_1_c45bbe75c8dd
+        icon: mdi:shoe-print
+        tap_action:
+          action: navigate
+          navigation_path: "hall"
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C" ]]]'
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Sypialnia
+        entity: light.bedroom_light
+        icon: mdi:bed-king
+        tap_action:
+          action: navigate
+          navigation_path: "bedroom"
+        label: '[[[ return states["sensor.0x00158d00044c015e_temperature"].state + "°C" ]]]'

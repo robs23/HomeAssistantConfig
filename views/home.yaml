@@ -80,51 +80,23 @@ cards:
     entity: media_player.chromecast
     icon: mdi:cast
     artwork: cover
-  - type: thermostat
-    entity: climate.0x842e14fffee19a4b_climate
-    name: Termostat w salonie
-  - type: thermostat
-    entity: climate.thermostat_in_bathroom
-    name: Termostat w łazience
-  - type: thermostat
-    entity: climate.thermostat_in_amelias_room
-    name: Termostat u Amelki
-  - type: custom:mini-media-player
-    entity: media_player.kitchens_speaker
-    artwork: cover
-    icon: mdi:google-home
-    source: icon
-    shortcuts:
-      columns: 2 # Max buttons per row
-      rows: 3
-      buttons:
-        # Start predefined playlist
-        - icon: mdi:baby-face
-          type: service
-          id: spotcast.start
-          data:
-            entity_id: media_player.kitchens_speaker
-            uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
-            random_song: true
-        - icon: mdi:sleep
-          media_content_type: playlist
-          media_content_id: "spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP"
-        - id: "http://31.192.216.10/rmf_fm"
-          name: RMF FM
-          app_name: RMF FM
-          type: music
-          icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
-          entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
-          entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
-        - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
-          name: RadioZET
-          type: music
-  - type: entities
-    entities:
+  - type: custom:swipe-card
+    parameters:
+    cards:
+      - type: thermostat
+        entity: climate.0x842e14fffee19a4b_climate
+        name: Termostat w salonie
+      - type: thermostat
+        entity: climate.thermostat_in_bathroom
+        name: Termostat w łazience
+      - type: thermostat
+        entity: climate.thermostat_in_amelias_room
+        name: Termostat u Amelki
+  - type: custom:swipe-card
+    parameters:
+    cards:
       - type: custom:mini-media-player
-        entity: media_player.photo_frame
-        show_source: true
-        group: true
+        entity: media_player.kitchens_speaker
         artwork: cover
         icon: mdi:google-home
         source: icon
@@ -137,16 +109,12 @@ cards:
               type: service
               id: spotcast.start
               data:
-                entity_id: media_player.photo_frame
+                entity_id: media_player.kitchens_speaker
                 uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
                 random_song: true
-            - icon: mdi:youtube
-              type: service
-              service: media_extractor.play_media
-              data:
-                entity_id: media_player.photo_frame
-                media_content_id: https://youtu.be/uHToZTZimcs
-                media_content_type: video/youtube
+            - icon: mdi:sleep
+              media_content_type: playlist
+              media_content_id: "spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP"
             - id: "http://31.192.216.10/rmf_fm"
               name: RMF FM
               app_name: RMF FM
@@ -157,36 +125,74 @@ cards:
             - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
               name: RadioZET
               type: music
-  - type: custom:mini-media-player
-    entity: media_player.amelias_speaker
-    artwork: cover
-    icon: mdi:google-home
-    source: icon
-    shortcuts:
-      columns: 2 # Max buttons per row
-      rows: 3
-      buttons:
-        # Start predefined playlist
-        - icon: mdi:baby-face
-          type: service
-          id: spotcast.start
-          data:
-            entity_id: media_player.amelias_speaker
-            uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
-            random_song: true
-        - icon: mdi:sleep
-          media_content_type: playlist
-          media_content_id: "spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP"
-        - id: "http://31.192.216.10/rmf_fm"
-          name: RMF FM
-          app_name: RMF FM
-          type: music
-          icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
-          entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
-          entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
-        - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
-          name: RadioZET
-          type: music
+      - type: entities
+        entities:
+          - type: custom:mini-media-player
+            entity: media_player.photo_frame
+            show_source: true
+            group: true
+            artwork: cover
+            icon: mdi:google-home
+            source: icon
+            shortcuts:
+              columns: 2 # Max buttons per row
+              rows: 3
+              buttons:
+                # Start predefined playlist
+                - icon: mdi:baby-face
+                  type: service
+                  id: spotcast.start
+                  data:
+                    entity_id: media_player.photo_frame
+                    uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
+                    random_song: true
+                - icon: mdi:youtube
+                  type: service
+                  service: media_extractor.play_media
+                  data:
+                    entity_id: media_player.photo_frame
+                    media_content_id: https://youtu.be/uHToZTZimcs
+                    media_content_type: video/youtube
+                - id: "http://31.192.216.10/rmf_fm"
+                  name: RMF FM
+                  app_name: RMF FM
+                  type: music
+                  icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+                  entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+                  entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
+                - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+                  name: RadioZET
+                  type: music
+      - type: custom:mini-media-player
+        entity: media_player.amelias_speaker
+        artwork: cover
+        icon: mdi:google-home
+        source: icon
+        shortcuts:
+          columns: 2 # Max buttons per row
+          rows: 3
+          buttons:
+            # Start predefined playlist
+            - icon: mdi:baby-face
+              type: service
+              id: spotcast.start
+              data:
+                entity_id: media_player.amelias_speaker
+                uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
+                random_song: true
+            - icon: mdi:sleep
+              media_content_type: playlist
+              media_content_id: "spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP"
+            - id: "http://31.192.216.10/rmf_fm"
+              name: RMF FM
+              app_name: RMF FM
+              type: music
+              icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+              entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+              entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
+            - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+              name: RadioZET
+              type: music
   - type: custom:xiaomi-vacuum-map-card
     title: Odkurzanie
     vacuum_platform: KrzysztofHajdamowicz/miio2
@@ -203,7 +209,14 @@ cards:
         predefined_selections:
           # - id: "{{state_attr('variable.vacuum_room_numbers', 'bedroom')}}"
           - id: 10
-            outline: [[ 0.3617886143243898, 5.0666666675 ], [ -2.470731708046342, 5.003252033417073 ], [ -2.4284552853243904, 1.7056910611048783 ], [ 0.3617886143243898, 1.7479674838268302 ], [ 0.3617886143243898, 5.003252033417073 ]]
+            outline:
+              [
+                [0.3617886143243898, 5.0666666675],
+                [-2.470731708046342, 5.003252033417073],
+                [-2.4284552853243904, 1.7056910611048783],
+                [0.3617886143243898, 1.7479674838268302],
+                [0.3617886143243898, 5.003252033417073],
+              ]
             label:
               text: "Sypialnia"
               x: -0.8430894332512202
@@ -214,7 +227,14 @@ cards:
               y: 4.1154471562560975
           # - id: "{{state_attr('variable.vacuum_room_numbers', 'hall')}}"
           - id: 12
-            outline: [[ -0.4308943117121955, 1.6845528497439028 ], [ -0.4308943117121955, -1.8455284475390235 ], [ 1.8308943039121948, -1.782113813456097 ], [ 1.8308943039121948, 1.7056910611048783 ], [ -0.45203252307317143, 1.6845528497439028 ]]
+            outline:
+              [
+                [-0.4308943117121955, 1.6845528497439028],
+                [-0.4308943117121955, -1.8455284475390235],
+                [1.8308943039121948, -1.782113813456097],
+                [1.8308943039121948, 1.7056910611048783],
+                [-0.45203252307317143, 1.6845528497439028],
+              ]
             label:
               text: "Korytarz"
               x: 0.7528455245024386
@@ -225,7 +245,14 @@ cards:
               x: 0.7739837358634141
               y: 0.07804878630975676
           - id: 11
-            outline: [[ 0.816260158585365, 5.024390244778049 ], [ 0.7317073131414631, 1.8113821179097567 ], [ 6.6292682828536575, 1.8536585406317077 ], [ 6.460162591965854, 5.172357724304878 ], [ 0.816260158585365, 5.045528456139024 ]]
+            outline:
+              [
+                [0.816260158585365, 5.024390244778049],
+                [0.7317073131414631, 1.8113821179097567],
+                [6.6292682828536575, 1.8536585406317077],
+                [6.460162591965854, 5.172357724304878],
+                [0.816260158585365, 5.045528456139024],
+              ]
             label:
               text: "Salon"
               x: 3.796747960482926
@@ -236,7 +263,14 @@ cards:
               x: 3.839024383204878
               y: 3.9886178880902445
           - id: 13
-            outline: [[ 1.8308943039121948, -0.9999999930999994 ], [ 1.8308943039121948, -2.4162601542853643 ], [ 4.79024389444878, -2.43739836564634 ], [ 4.747967471726828, -0.9788617817390239 ], [ 1.8731707266341457, -1.0422764158219504 ]]
+            outline:
+              [
+                [1.8308943039121948, -0.9999999930999994],
+                [1.8308943039121948, -2.4162601542853643],
+                [4.79024389444878, -2.43739836564634],
+                [4.747967471726828, -0.9788617817390239],
+                [1.8731707266341457, -1.0422764158219504],
+              ]
             label:
               text: "Kuchnia"
               x: 3.39512194462439

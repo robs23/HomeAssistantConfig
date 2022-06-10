@@ -35,7 +35,6 @@ frontend:
     - /hacsfiles/lovelace-card-mod/card-mod.js
   themes: !include_dir_merge_named themes
 
-
 variable: !include variables.yaml
 
 light:
@@ -45,6 +44,18 @@ light:
       - light.kitchen_lights_light_l1
       - light.kitchen_lights_light_l2
       - light.shelly_shsw_1_c45bbe76cec1
+  - platform: template
+    lights:
+      bedroom_light:
+        friendly_name: "Bedroom light"
+        turn_on:
+        turn_off:
+        set_level:
+      bathroom_light:
+        friendly_name: "Bathroom light"
+        turn_on:
+        turn_off:
+        set_level:
 
 shelly:
   discovery: true
@@ -147,8 +158,8 @@ media_player:
 rest_command:
   assistant_relay:
     url: http://192.168.0.115:3000/assistant
-    method: 'post'
-    content_type: 'application/json'
+    method: "post"
+    content_type: "application/json"
     payload: '{"command":"{{ command }}", "user":"Robert"}'
 
 mqtt:
@@ -219,6 +230,10 @@ binary_sensor:
         delay_off:
           minutes: 3
         value_template: "{{states('sensor.0x588e81fffed97f99_power') | float < 44 and states('sensor.0x588e81fffed97f99_power') | float > 10 }}"
+      amelia_room_occupancy:
+        friendly_name: "Amelia room occupancy"
+        icon_template: mdi:walk
+        value_template: "{{states('binary_sensor.0x00158d0005729974_occupancy') == 'on' or states('binary_sensor.amelia_motion_sensor_2_occupancy') == 'on' }}"
 
 sensor:
   - platform: mqtt_room

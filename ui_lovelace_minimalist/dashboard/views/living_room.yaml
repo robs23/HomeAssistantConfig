@@ -1,0 +1,111 @@
+title: "Salon"
+path: "living_room"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+  - type: "custom:button-card"
+    template: card_title
+    name: Salon
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_input_boolean
+        entity: input_boolean.sleeping_mode
+        name: Tryb nocny
+      - type: 'custom:button-card'
+        template: card_binary_sensor
+        variables:
+          - ulm_card_binary_sensor_alert: true
+        entity: binary_sensor.0x00158d00057280cd_occupancy
+        name: "Ruch"
+        show_last_changed: true
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_graph
+        variables:
+          ulm_card_graph_color: "var(--google-red)"
+          ulm_card_graph_name: Temperatura
+          ulm_card_graph_entity: sensor.living_room_temperature
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.living_room_lights_l3
+        variables:
+          ulm_card_light_name: Sofa
+          ulm_card_light_force_background_color: true
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.living_room_lights_l2
+        variables:
+          ulm_card_light_name: Przód
+          ulm_card_light_force_background_color: true
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.living_room_lights_l1
+        variables:
+          ulm_card_light_name: Stół
+          ulm_card_light_force_background_color: true
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.tv_lights
+        variables:
+          ulm_card_light_name: Lampka
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_color: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: true
+  - type: "custom:button-card"
+    template: card_thermostat
+    entity: climate.0x842e14fffee19a4b_climate
+    variables:
+      ulm_card_thermostat_enable_collapse: true
+      ulm_card_thermostat_enable_controls: true
+      ulm_card_thermostat_enable_hvac_modes: true
+      ulm_card_thermostat_enable_popup: true
+  - type: custom:mini-media-player
+    entity: media_player.photo_frame
+    show_source: true
+    group: true
+    artwork: cover
+    icon: mdi:google-home
+    source: icon
+    shortcuts:
+      columns: 2 # Max buttons per row
+      rows: 3
+      buttons:
+        # Start predefined playlist
+        - icon: mdi:baby-face
+          type: service
+          id: spotcast.start
+          data:
+            entity_id: media_player.photo_frame
+            uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
+            random_song: true
+        - icon: mdi:youtube
+          type: service
+          service: media_extractor.play_media
+          data:
+            entity_id: media_player.photo_frame
+            media_content_id: https://youtu.be/uHToZTZimcs
+            media_content_type: video/youtube
+        - id: "http://31.192.216.10/rmf_fm"
+          name: RMF FM
+          app_name: RMF FM
+          type: music
+          icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+          entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+          entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
+        - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+          name: RadioZET
+          type: music

@@ -1,0 +1,30 @@
+title: "Łazienka"
+path: "bathroom"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+  - type: "custom:button-card"
+    template: card_title
+    name: Łazienka
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_graph
+        variables:
+          ulm_card_graph_color: "var(--google-red)"
+          ulm_card_graph_name: Temperatura
+          ulm_card_graph_entity: sensor.bathroom_temperature
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24
+  - type: "custom:button-card"
+    template: card_thermostat
+    entity: climate.thermostat_in_bathroom
+    variables:
+      ulm_card_thermostat_enable_collapse: true
+      ulm_card_thermostat_enable_controls: true
+      ulm_card_thermostat_enable_hvac_modes: true
+      ulm_card_thermostat_enable_popup: true

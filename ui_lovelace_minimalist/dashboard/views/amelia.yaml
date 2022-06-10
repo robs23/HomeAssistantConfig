@@ -1,0 +1,84 @@
+title: "Amelia"
+path: "amelia"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+  - type: "custom:button-card"
+    template: card_title
+    name: Amelia
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_input_boolean
+        entity: input_boolean.night_mode
+        name: Tryb nocny
+      - type: 'custom:button-card'
+        template: card_binary_sensor
+        variables:
+          - ulm_card_binary_sensor_alert: true
+        entity: binary_sensor.amelia_room_occupancy
+        name: "Ruch"
+        show_last_changed: true
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_graph
+        variables:
+          ulm_card_graph_color: "var(--google-red)"
+          ulm_card_graph_name: Temperatura
+          ulm_card_graph_entity: sensor.0x00158d00044bc01c_temperature
+          ulm_card_graph_type: fill
+          ulm_card_graph_hours: 24
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.0xbc33acfffe6d82d0_light
+        variables:
+          ulm_card_light_name: Sufit
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: true
+  - type: "custom:button-card"
+    template: card_thermostat
+    entity: climate.thermostat_in_amelias_room
+    variables:
+      ulm_card_thermostat_enable_collapse: true
+      ulm_card_thermostat_enable_controls: true
+      ulm_card_thermostat_enable_hvac_modes: true
+      ulm_card_thermostat_enable_popup: true
+  - type: custom:mini-media-player
+    entity: media_player.amelias_speaker
+    artwork: cover
+    icon: mdi:google-home
+    source: icon
+    shortcuts:
+      columns: 2 # Max buttons per row
+      rows: 3
+      buttons:
+        # Start predefined playlist
+        - icon: mdi:baby-face
+          type: service
+          id: spotcast.start
+          data:
+            entity_id: media_player.amelias_speaker
+            uri: spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP
+            random_song: true
+        - icon: mdi:sleep
+          media_content_type: playlist
+          media_content_id: "spotify:playlist:1LUeWgLXGPvDU9eqcLDRVP"
+        - id: "http://31.192.216.10/rmf_fm"
+          name: RMF FM
+          app_name: RMF FM
+          type: music
+          icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+          entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+          entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
+        - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+          name: RadioZET
+          type: music

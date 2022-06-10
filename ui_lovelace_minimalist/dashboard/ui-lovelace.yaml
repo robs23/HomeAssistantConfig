@@ -1,16 +1,16 @@
 ---
 resources:
-  # - url: /hacsfiles/button-card/button-card.js
-  #   type: module
-  # - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
-  #   type: module
-  # - url: /hacsfiles/my-cards/my-cards.js
-  #   type: module
 
 button_card_templates: !include_dir_merge_named /config/custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/
 title: "Minimalist"
 
 background: "var(--background-image)"
 # views: !include_dir_merge_list "views/"
-views: 
+views:
   - !include /config/ui_lovelace_minimalist/dashboard/views/home.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/kitchen.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/living_room.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/amelia.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/bathroom.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/hall.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/bedroom.yaml
