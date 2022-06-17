@@ -14,3 +14,7 @@ views:
   - !include /config/ui_lovelace_minimalist/dashboard/views/bathroom.yaml
   - !include /config/ui_lovelace_minimalist/dashboard/views/hall.yaml
   - !include /config/ui_lovelace_minimalist/dashboard/views/bedroom.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/lights.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/climate.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/playing.yaml
+

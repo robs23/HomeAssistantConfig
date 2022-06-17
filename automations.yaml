@@ -207,3 +207,43 @@
     data:
       command: Toggle tv lights
   mode: single
+- id: '1655324971951'
+  alias: Home occupancy
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.0x00158d00057280cd_occupancy
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.amelia_room_occupancy
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.amelia_motion_sensor_2_occupancy
+    to: 'on'
+    from: 'off'
+  - platform: state
+    entity_id: binary_sensor.kitchen_window_contact
+  - platform: state
+    entity_id: binary_sensor.main_door_contact
+  - platform: state
+    entity_id: binary_sensor.shelly_shsw_1_c45bbe75c8dd_switch
+  - platform: state
+    entity_id: binary_sensor.shelly_shsw_1_c45bbe76cec1_switch
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.home_occupancy
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.home_occupancy
+  mode: restart

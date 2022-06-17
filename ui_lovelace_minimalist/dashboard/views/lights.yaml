@@ -1,0 +1,99 @@
+title: "Światło"
+path: "lights"
+cards:
+  - type: horizontal-stack
+    cards: 
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+  - type: "custom:button-card"
+    template: card_title
+    name: Kuchnia
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.kitchen_lights_light_l1
+        variables:
+          ulm_card_light_name: Główne
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_popup: true
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.kitchen_lights_light_l2
+        variables:
+          ulm_card_light_name: Blat
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_popup: true  
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.shelly_shsw_1_c45bbe76cec1
+        variables:
+          ulm_card_light_name: Listwa
+          ulm_card_light_force_background_color: true  
+  - type: "custom:button-card"
+    template: card_title
+    name: Salon 
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.living_room_lights_l3
+        variables:
+          ulm_card_light_name: Sofa
+          ulm_card_light_force_background_color: true
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.living_room_lights_l2
+        variables:
+          ulm_card_light_name: Przód
+          ulm_card_light_force_background_color: true
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.living_room_lights_l1
+        variables:
+          ulm_card_light_name: Stół
+          ulm_card_light_force_background_color: true
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.tv_lights
+        variables:
+          ulm_card_light_name: Lampka
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_color: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: true   
+  - type: "custom:button-card"
+    template: card_title
+    name: Amelia
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.0xbc33acfffe6d82d0_light
+        variables:
+          ulm_card_light_name: Sufit
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: true
+  - type: "custom:button-card"
+    template: card_title
+    name: Korytarz
+  - type: "custom:button-card"
+    template: card_light
+    entity: light.shelly_shsw_1_c45bbe75c8dd
+    variables:
+      ulm_card_light_name: Sufit
+      ulm_card_light_force_background_color: true
+      ulm_card_light_enable_popup: true

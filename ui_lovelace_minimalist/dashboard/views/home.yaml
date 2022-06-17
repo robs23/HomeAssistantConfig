@@ -8,19 +8,19 @@ cards:
       ulm_card_esh_welcome_collapse: input_boolean.minimalist_dropdown
       ulm_weather: "weather.dom"
       entity_1:
-        nav: "house"
-        icon: "mdi:home"
-        name: "House"
-        color: "blue"
+        nav: "climate"
+        icon: "mdi:home-thermometer"
+        name: "Temperatura"
+        color: "red"
       entity_2:
         nav: "lights"
         icon: "mdi:lightbulb"
-        name: "Lights"
+        name: "Światło"
         color: "yellow"
       entity_3:
-        nav: "security"
-        icon: "mdi:shield"
-        name: Secure
+        nav: "playing"
+        icon: "mdi:play-circle"
+        name: Media
         color: "green"
       entity_4:
         nav: "network"
@@ -31,7 +31,7 @@ cards:
         nav: "network"
         icon: "mdi:flask"
         name: Lab
-        color: "red"
+        color: "blue"
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
@@ -48,6 +48,15 @@ cards:
           ulm_card_person_use_entity_picture: true
           ulm_card_person_zone1: zone.work
           ulm_card_person_zone2: zone.school
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_binary_sensor
+        variables:
+          - ulm_card_binary_sensor_alert: true
+        entity: input_boolean.home_occupancy
+        name: "Ruch"
+        show_last_changed: true
   - type: "custom:button-card"
     template: card_title
     name: Pokoje

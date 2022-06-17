@@ -111,3 +111,7 @@
     initial: off
   romantic_scene_toggle:
     name: Romantic scene toggle
+  home_occupancy:
+    name: Home occupancy
+    icon: mdi:walk
+    
