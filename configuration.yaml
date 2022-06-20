@@ -12,10 +12,12 @@ scene: !include scenes.yaml
 input_boolean: !include input_booleans.yaml
 
 http:
-  ssl_certificate: /ssl/fullchain.pem
-  ssl_key: /ssl/privkey.pem
+  use_x_forwarded_for: true
+  trusted_proxies: 172.30.33.1
+#   ssl_certificate: /ssl/fullchain.pem
+#   ssl_key: /ssl/privkey.pem
 
-http trusted_proxies: !include trusted_proxies.yaml
+# http trusted_proxies: !include trusted_proxies.yaml
 
 lovelace:
   mode: yaml
@@ -234,7 +236,12 @@ binary_sensor:
         friendly_name: "Amelia room occupancy"
         icon_template: mdi:walk
         value_template: "{{states('binary_sensor.0x00158d0005729974_occupancy') == 'on' or states('binary_sensor.amelia_motion_sensor_2_occupancy') == 'on' }}"
-      
+      home_occupancy:
+        friendly_name: "Home occupancy"
+        icon_template: mdi:walk
+        value_template: "{{ states.input_boolean.home_occupancy.state == 'on' }}"
+        device_class: occupancy
+        
 sensor:
   - platform: mqtt_room
     device_id: "iBeacon:e60ec4cf-2ecd-4d3b-b16a-aa852bed8b19-100-1"

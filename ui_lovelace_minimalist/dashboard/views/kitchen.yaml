@@ -12,6 +12,8 @@ cards:
         variables:
           - ulm_card_binary_sensor_alert: true
         entity: binary_sensor.kitchen_window_contact
+        name: "Okno"
+        icon: mdi:window-closed-variant
         show_last_changed: true
   - type: "custom:button-card"
     template: card_title

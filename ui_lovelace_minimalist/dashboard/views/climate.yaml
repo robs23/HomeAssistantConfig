@@ -12,10 +12,13 @@ cards:
     template: card_thermostat
     entity: climate.0x842e14fffee19a4b_climate
     variables:
+      ulm_card_thermostat_name: "Termostat"
       ulm_card_thermostat_enable_collapse: true
       ulm_card_thermostat_enable_controls: true
       ulm_card_thermostat_enable_hvac_modes: true
       ulm_card_thermostat_enable_popup: true
+      ulm_card_thermostat_enable_background_color: true
+      ulm_card_thermostat_enable_display_temperature: true
   - type: "custom:button-card"
     template: card_title
     name: Łazienka
@@ -23,10 +26,13 @@ cards:
     template: card_thermostat
     entity: climate.thermostat_in_bathroom
     variables:
+      ulm_card_thermostat_name: "Termostat"
       ulm_card_thermostat_enable_collapse: true
       ulm_card_thermostat_enable_controls: true
       ulm_card_thermostat_enable_hvac_modes: true
       ulm_card_thermostat_enable_popup: true
+      ulm_card_thermostat_enable_background_color: true
+      ulm_card_thermostat_enable_display_temperature: true
   - type: "custom:button-card"
     template: card_title
     name: Amelia
@@ -34,7 +40,10 @@ cards:
     template: card_thermostat
     entity: climate.thermostat_in_amelias_room
     variables:
+      ulm_card_thermostat_name: "Termostat"
       ulm_card_thermostat_enable_collapse: true
       ulm_card_thermostat_enable_controls: true
       ulm_card_thermostat_enable_hvac_modes: true
       ulm_card_thermostat_enable_popup: true
+      ulm_card_thermostat_enable_background_color: true
+      ulm_card_thermostat_enable_display_temperature: true

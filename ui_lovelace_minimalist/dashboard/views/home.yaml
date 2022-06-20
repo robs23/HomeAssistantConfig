@@ -54,7 +54,7 @@ cards:
         template: card_binary_sensor
         variables:
           - ulm_card_binary_sensor_alert: true
-        entity: input_boolean.home_occupancy
+        entity: binary_sensor.home_occupancy
         name: "Ruch"
         show_last_changed: true
   - type: "custom:button-card"
