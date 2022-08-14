@@ -11,3 +11,9 @@ Family:
   entities:
     - person.robert
     - person.dominika
+
+garmin:
+  name: Garmin
+  entities:
+    - light.tv_lights
+    - input_boolean.tv

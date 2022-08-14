@@ -139,3 +139,7 @@
       expose: true
       room: Kitchen
       name: Kitchen strip
+    cover.shelly_shsw_25_4c752533ee84:
+      expose: true
+      room: Bedroom
+      name: Bedroom blinds

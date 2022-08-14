@@ -15,18 +15,85 @@ cards:
       - type: 'custom:button-card'
         template: card_input_boolean
         entity: input_boolean.night_mode
-        name: Tryb nocny
+        variables:
+          ulm_card_input_boolean_name: Tryb nocny
       - type: 'custom:button-card'
         template: card_binary_sensor
         variables:
-          - ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_name: "Ruch"
+          ulm_card_binary_sensor_alert: true
+          ulm_show_last_changed: true
         entity: binary_sensor.amelia_room_occupancy
-        name: "Ruch"
-        show_last_changed: true
+  - type: horizontal-stack
+    cards:
+      - type: gauge
+        entity: sensor.0x00158d00044bc01c_humidity
+        name: Wilgotność
+        needle: true
+        min: 20
+        max: 80
+        segments:
+          - from: 0
+            color: '#db4437'
+          - from: 30
+            color: '#ffa600'
+          - from: 35
+            color: '#43a047'
+          - from: 55
+            color: '#ffa600'
+          - from: 60
+            color: '#db4437'
+  - type: custom:scheduler-card
+    discover_existing: false
+    display_options:
+      primary_info:
+        - "{entity}: {name}"
+      secondary_info: relative-time
+      icon: "hass:action"
+    customize:
+      climate.thermostat_in_amelias_room:
+        name: "Termostat"
+        icon: thermometer
+        actions:
+          - service: climate.set_temperature
+            variables:
+              temperature:
+                name: "Temperatura"
+                min: 5
+                max: 30
+                step: 1
+            icon: thermometer
+            name: "Ustaw temperature"
+      input_boolean.night_mode:
+        name: "Tryb nocny"
+        icon: weather-night
+    groups:
+      - thermostats:
+          domains: [climate]
+          icon: home-thermometer-outline
+          actions:
+            - icon: thermometer-chevron-up
+              service: set_temperature
+        name: Termostat
+        include: 
+          - climate.thermostat_in_amelias_room
+      - input_booleans:
+          domains: [input_boolean]
+          icon: toggle-switch
+          actions:
+            - icon: toggle-switch
+              service: turn_on
+            - icon: toggle-switch-off
+              service: turn_off
+        name: Tryb nocny
+        include:  
+          - input_boolean.night_mode
+    
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
         template: card_graph
+        entity: sensor.0x00158d00044bc01c_temperature
         variables:
           ulm_card_graph_color: "var(--google-red)"
           ulm_card_graph_name: Temperatura

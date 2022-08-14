@@ -14,6 +14,7 @@ cards:
     cards:
       - type: "custom:button-card"
         template: card_graph
+        entity: sensor.bathroom_temperature
         variables:
           ulm_card_graph_color: "var(--google-red)"
           ulm_card_graph_name: Temperatura

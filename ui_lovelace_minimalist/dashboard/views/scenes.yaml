@@ -1,0 +1,26 @@
+title: "Sceny"
+path: "scenes"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+  - type: "custom:button-card"
+    template: card_title
+    name: Sceny
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_input_boolean
+        entity: input_boolean.nap_time
+        variables:
+          ulm_card_input_boolean_name: Drzemka
+          ulm_card_input_boolean_icon: mdi:sleep
+      - type: 'custom:button-card'
+        template: card_input_boolean
+        entity: input_boolean.romantic_scene_toggle
+        variables:
+          ulm_card_input_boolean_name: <3
+          ulm_card_input_boolean_icon: mdi:heart

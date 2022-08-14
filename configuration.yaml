@@ -13,11 +13,25 @@ input_boolean: !include input_booleans.yaml
 
 http:
   use_x_forwarded_for: true
-  trusted_proxies: 172.30.33.1
-#   ssl_certificate: /ssl/fullchain.pem
-#   ssl_key: /ssl/privkey.pem
-
-# http trusted_proxies: !include trusted_proxies.yaml
+  trusted_proxies: 
+    - 172.30.33.1
+    - 173.245.48.0
+    - 103.31.4.0
+    - 103.22.200.0
+    - 103.21.244.0
+    - 141.101.64.0
+    - 108.162.192.0
+    - 190.93.240.0
+    - 188.114.96.0
+    - 197.234.240.0
+    - 198.41.128.0
+    - 162.158.0.0
+    - 104.16.0.0
+    - 104.24.0.0
+    - 172.64.0.0
+    - 131.0.72.0
+    - 172.30.33.8
+    - 198.41.192.47
 
 lovelace:
   mode: yaml
@@ -68,6 +82,9 @@ shelly:
     - id: "C45BBE75C8DD"
       name: Hall light
       light_switch: true
+    - id: "4C752533EE84"
+      name: Bedroom blinds
+      light_switch: false
 
 device_tracker:
   - platform: bluetooth_tracker
@@ -237,11 +254,11 @@ binary_sensor:
         icon_template: mdi:walk
         value_template: "{{states('binary_sensor.0x00158d0005729974_occupancy') == 'on' or states('binary_sensor.amelia_motion_sensor_2_occupancy') == 'on' }}"
       home_occupancy:
-        friendly_name: "Home occupancy"
+        friendly_name: "{{states.input_text.home_occupancy_last_trigger.state}}"
         icon_template: mdi:walk
         value_template: "{{ states.input_boolean.home_occupancy.state == 'on' }}"
         device_class: occupancy
-        
+
 sensor:
   - platform: mqtt_room
     device_id: "iBeacon:e60ec4cf-2ecd-4d3b-b16a-aa852bed8b19-100-1"

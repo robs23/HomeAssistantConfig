@@ -17,4 +17,6 @@ views:
   - !include /config/ui_lovelace_minimalist/dashboard/views/lights.yaml
   - !include /config/ui_lovelace_minimalist/dashboard/views/climate.yaml
   - !include /config/ui_lovelace_minimalist/dashboard/views/playing.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/scenes.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/service.yaml
 

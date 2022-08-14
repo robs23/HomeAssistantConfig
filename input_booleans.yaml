@@ -57,7 +57,6 @@
     initial: off
   night_mode:
     name: Night mode
-    initial: off
   fake_heater:
     initial: off
   fake_bedroom_heater:

@@ -15,18 +15,20 @@ cards:
       - type: 'custom:button-card'
         template: card_input_boolean
         entity: input_boolean.sleeping_mode
-        name: Tryb nocny
+        variables:
+          ulm_card_input_boolean_name: Tryb nocny
       - type: 'custom:button-card'
         template: card_binary_sensor
         variables:
-          - ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_alert: true
+          ulm_show_last_changed: true
+          ulm_card_binary_sensor_name: "Ruch"
         entity: binary_sensor.0x00158d00057280cd_occupancy
-        name: "Ruch"
-        show_last_changed: true
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
         template: card_graph
+        entity: sensor.living_room_temperature
         variables:
           ulm_card_graph_color: "var(--google-red)"
           ulm_card_graph_name: Temperatura
@@ -76,6 +78,20 @@ cards:
       ulm_card_thermostat_enable_popup: true
       ulm_card_thermostat_enable_background_color: true
       ulm_card_thermostat_enable_display_temperature: true
+  - type: 'custom:button-card'
+    template: card_input_boolean
+    entity: input_boolean.tv
+    variables:
+      ulm_card_input_boolean_name: "TV"
+      ulm_card_input_boolean_icon: mdi:television
+  - type: custom:mini-media-player
+    entity: media_player.dreambox
+    icon: mdi:television-classic
+    artwork: cover
+  - type: custom:mini-media-player
+    entity: media_player.chromecast
+    icon: mdi:cast
+    artwork: cover
   - type: custom:mini-media-player
     entity: media_player.photo_frame
     show_source: true

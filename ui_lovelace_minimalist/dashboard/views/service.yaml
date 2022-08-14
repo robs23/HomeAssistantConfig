@@ -1,0 +1,83 @@
+title: "Serwis"
+path: "service"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+  - type: "custom:button-card"
+    template: card_title
+    name: Serwis
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_input_boolean
+        entity: input_boolean.alarm_armed
+        variables:
+          ulm_card_input_boolean_name: Alarm
+  - type: horizontal-stack
+    cards: 
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.0x00158d0005729974_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik ruchu u Amelii
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.amelia_motion_sensor_2_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik ruchu u Amelki (pod oknem)
+  - type: horizontal-stack
+    cards:       
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.0x00158d00044bc01c_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik temperatury u Amelii
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.0x00158d00057280cd_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik ruchu w Salonie
+  - type: horizontal-stack
+    cards:       
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.0x00158d00044c015e_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik temperatury w Sypialni
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.0x00158d000395bc64_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Przycisk w kuchni
+  - type: horizontal-stack
+    cards:       
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.kitchen_window_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik okna w kuchni
+      - type: 'custom:button-card'
+        template: card_battery
+        entity: sensor.main_door_battery
+        variables:
+            ulm_card_battery_battery_level_danger: 30
+            ulm_card_battery_battery_level_warning: 80
+        name: Czujnik drzwi wejściowych

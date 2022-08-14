@@ -225,18 +225,107 @@
     from: 'off'
   - platform: state
     entity_id: binary_sensor.kitchen_window_contact
+    from: 'off'
+    to: 'on'
   - platform: state
     entity_id: binary_sensor.main_door_contact
+    from: 'off'
+    to: 'on'
   - platform: state
     entity_id: binary_sensor.shelly_shsw_1_c45bbe75c8dd_switch
   - platform: state
     entity_id: binary_sensor.shelly_shsw_1_c45bbe76cec1_switch
+  - platform: state
+    entity_id: binary_sensor.main_door_contact
+    from: 'on'
+    to: 'off'
+  - platform: state
+    entity_id: binary_sensor.kitchen_window_contact
+    from: 'on'
+    to: 'off'
   condition: []
   action:
   - service: input_boolean.turn_on
     data: {}
     target:
       entity_id: input_boolean.home_occupancy
+  - service: input_text.set_value
+    data:
+      value: '{{trigger.to_state.name}}'
+    target:
+      entity_id: input_text.home_occupancy_last_trigger
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: aqara_light_movement_sensor_occupancy
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: Salon
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: Hall light - Switch
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: Korytarz światło
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: main_door_contact
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: Korytarz drzwi
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: kitchen_window_contact
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: Kuchnia okno
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: Kitchen strip - Switch
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: Kuchnia listwa
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: Amelia room occupancy
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: U Amelii
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: state
+        entity_id: input_text.home_occupancy_last_trigger
+        state: amelia_motion_sensor_2_occupancy
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: U Amelii
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    default: []
   - delay:
       hours: 0
       minutes: 2
@@ -246,4 +335,189 @@
     data: {}
     target:
       entity_id: input_boolean.home_occupancy
+  mode: restart
+- id: '1656706381206'
+  alias: Alarm_armed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.home_occupancy
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.alarm_armed
+    state: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  action:
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: group.family
+      state: home
+    then:
+    - service: input_boolean.turn_off
+      data: {}
+      target:
+        entity_id: input_boolean.alarm_armed
+    else:
+    - service: notify.mobile_app_s20fe
+      data:
+        message: 'Wykryto obecność: {{ states(''input_text.home_occupancy_last_trigger'')
+          }}'
+        title: Ruch w domu
+  mode: single
+- id: '1656707995131'
+  alias: Family_away
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - group.family
+    from: home
+    to: not_home
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.alarm_armed
+  mode: restart
+- id: '1657741030169'
+  alias: Set living_room_persons
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.dominika_phone
+  - platform: state
+    entity_id:
+    - sensor.robert_phone
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: sensor.dominika_phone
+        state: living_room
+      - condition: state
+        entity_id: sensor.robert_phone
+        state: living_room
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: 👧👦
+        target:
+          entity_id: input_text.living_room_persons
+    - conditions:
+      - condition: state
+        entity_id: sensor.robert_phone
+        state: living_room
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.dominika_phone
+          state: living_room
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: 👦
+        target:
+          entity_id: input_text.living_room_persons
+    - conditions:
+      - condition: state
+        entity_id: sensor.dominika_phone
+        state: living_room
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.robert_phone
+          state: living_room
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: 👧
+        target:
+          entity_id: input_text.living_room_persons
+    default:
+    - service: input_text.set_value
+      data:
+        value: ' '
+      target:
+        entity_id: input_text.living_room_persons
+  mode: restart
+- id: '1657741283441'
+  alias: Set bedroom_persons
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.dominika_phone
+  - platform: state
+    entity_id:
+    - sensor.robert_phone
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: sensor.dominika_phone
+        state: bedroom
+      - condition: state
+        entity_id: sensor.robert_phone
+        state: bedroom
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: 👧👦
+        target:
+          entity_id: input_text.bedroom_persons
+    - conditions:
+      - condition: state
+        entity_id: sensor.robert_phone
+        state: bedroom
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.dominika_phone
+          state: bedroom
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: 👦
+        target:
+          entity_id: input_text.bedroom_persons
+    - conditions:
+      - condition: state
+        entity_id: sensor.dominika_phone
+        state: bedroom
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.robert_phone
+          state: bedroom
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: 👧
+        target:
+          entity_id: input_text.bedroom_persons
+    default:
+    - service: input_text.set_value
+      data:
+        value: ' '
+      target:
+        entity_id: input_text.bedroom_persons
   mode: restart
