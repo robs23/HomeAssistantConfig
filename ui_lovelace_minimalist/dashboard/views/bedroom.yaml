@@ -7,9 +7,27 @@ cards:
         template: chip_back
         variables:
           ulm_chip_back_path: home
+      - type: "custom:button-card"
+        template: card_title
+        name: Sypialnia
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        template: chip_navigate
+        variables:
+          ulm_chip_navigate_path: /dashboard-mobile/bedroom_automations/
+          ulm_chip_navigate_icon: mdi:robot
   - type: "custom:button-card"
-    template: card_title
-    name: Sypialnia
+    template: card_light
+    entity: light.bedside_lamp_local
+    variables:
+      ulm_card_light_name: Lampka
+      ulm_card_light_force_background_color: true
+      ulm_card_light_enable_slider: true
+      ulm_card_light_enable_color: true
+      ulm_card_light_enable_collapse: true
+      ulm_card_light_enable_popup: true
+      ulm_card_light_enable_popup_tap: true
   - type: horizontal-stack
     cards:
       - type: gauge
@@ -36,27 +54,104 @@ cards:
       ulm_card_cover_enable_controls: true
       ulm_card_cover_enable_slider: true
       ulm_card_cover_name: "Roleta"
-  - type: custom:scheduler-card
-    discover_existing: false
-    display_options:
-      primary_info:
-        - "{entity}: {name}"
-      secondary_info: relative-time
-      icon: "hass:action"
-    customize:
-      cover.shelly_shsw_25_4c752533ee84:
-        name: "Roleta"
-        icon: blinds
-    groups:
-      - covers:
-          domains: [cover]
-          icon: blinds
-          actions:
-            - icon: blinds
-              service: set_cover_position
-        name: Roleta
-        include: 
-          - cover.shelly_shsw_25_4c752533ee84
+      ulm_icon_hold_action: "call-service"
+      ulm_icon_hold_service: "script.notify_on_state_changed"
+      ulm_icon_hold_service_data:
+        the_entity: cover.shelly_shsw_25_4c752533ee84
+        the_state: '[[[ return states["cover.shelly_shsw_25_4c752533ee84"].state ]]]'
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_power_outlet
+        variables:
+          ulm_card_power_outlet_consumption_sensor: sensor.office_switch_power
+          ulm_card_power_outlet_name: Biurko
+          ulm_icon_hold_action: "call-service"
+          ulm_icon_hold_service: "script.notify_on_state_changed"
+          ulm_icon_hold_service_data:
+            the_entity: switch.office_switch
+            the_state: '[[[ return states["switch.office_switch"].state ]]]'
+        entity: switch.office_switch
+      - type: 'custom:button-card'
+        template: card_binary_sensor_alert
+        variables:
+          ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_alert_show_last_changed: true
+          ulm_card_binary_sensor_alert_name: "Okno"
+          ulm_card_binary_sensor_alert_icon: mdi:window-closed-variant
+          ulm_icon_hold_action: "call-service"
+          ulm_icon_hold_service: "script.notify_on_state_changed"
+          ulm_icon_hold_service_data:
+            the_entity: binary_sensor.bedroom_window_contact
+            the_state: '[[[ return states["binary_sensor.bedroom_window_contact"].state ]]]'
+        entity: binary_sensor.bedroom_window_contact
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: "custom:button-card"
+        entity: input_boolean.bedroom_schedule_expanded
+        state:
+          - value: 'off'
+            icon: mdi:chevron-down
+            color: black
+          - value: 'on'
+            icon: mdi:chevron-up
+            color: black
+        tap_action:
+          action: toggle
+        layout: icon_label
+        show_label: true
+        show_name: false
+        label: Harmonogram
+        styles:
+          grid:
+            - grid-template-areas: '"n i" "s i" "l i"'
+            - grid-template-columns: 1fr 40%
+          label:
+            - font-size: 26px
+            - font-weight: bold
+      - type: conditional
+        conditions:
+          - entity: input_boolean.bedroom_schedule_expanded
+            state: "on"
+        card:
+          type: custom:scheduler-card
+          discover_existing: false
+          title: ""
+          display_options:
+            primary_info:
+              - "{entity}: {name}"
+            secondary_info: relative-time
+            icon: "hass:action"
+          customize:
+            cover.shelly_shsw_25_4c752533ee84:
+              name: "Roleta"
+              icon: blinds
+            switch.office_switch:
+              name: "Biurko"
+              icon: desk
+            binary_sensor.bedroom_window_contact:
+              states: ['on', 'off']
+          groups:
+            - covers:
+                domains: [cover]
+                icon: blinds
+                actions:
+                  - icon: blinds
+                    service: set_cover_position
+              name: Roleta
+              include: 
+                - cover.shelly_shsw_25_4c752533ee84
+            - switches:
+                domains: [switch]
+                icon: toggle-switch
+                actions:
+                  - icon: toggle-switch
+                    service: turn_on
+                  - icon: toggle-switch-off
+                    service: turn_off
+              name: Biurko
+              include:  
+                - switch.office_switch
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
@@ -68,6 +163,15 @@ cards:
           ulm_card_graph_entity: sensor.0x00158d00044c015e_temperature
           ulm_card_graph_type: fill
           ulm_card_graph_hours: 24
+          ulm_icon_hold_action: "call-service"
+          ulm_icon_hold_service: "script.notify_on_state_changed"
+          ulm_icon_hold_service_data:
+            the_entity: sensor.0x00158d00044c015e_temperature
+            the_state: '[[[ return states["sensor.0x00158d00044c015e_temperature"].state ]]]'
+  - type: custom:mini-media-player
+    entity: media_player.bedcast
+    icon: mdi:cast
+    artwork: cover
   - type: custom:mini-media-player
     entity: media_player.bedroom_speaker
     artwork: cover

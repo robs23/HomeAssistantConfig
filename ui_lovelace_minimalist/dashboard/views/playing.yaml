@@ -153,3 +153,7 @@ cards:
     entity: media_player.chromecast
     icon: mdi:cast
     artwork: cover
+  - type: custom:mini-media-player
+    entity: media_player.bedcast
+    icon: mdi:cast
+    artwork: cover

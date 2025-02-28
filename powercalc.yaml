@@ -1,0 +1,65 @@
+sensors:
+  - entity_id: input_boolean.fridge_samsung
+    name: Fridge
+    fixed:
+      power: 36
+
+  - create_group: All thermostats
+    entities: 
+      - entity_id: binary_sensor.thermostat_in_living_room_heating
+        name: Thermostat in living room
+        fixed:
+          power: 1
+      - entity_id: binary_sensor.thermostat_in_bathroom_heating_2
+        name: Thermostat in bathroom
+        fixed:
+          power: 1
+      - entity_id: binary_sensor.thermostat_in_amelias_room_heating_2
+        name: Thermostat in Amelia room
+        fixed:
+          power: 1
+
+  - create_group: All lights
+    entities:
+      - entity_id: light.shelly_shsw_1_c45bbe75c8dd
+        name: Hall light
+        fixed:
+          power: 8
+      - entity_id: light.0xbc33acfffe6d82d0_light
+        name: Amelia light
+        linear:
+          min_power: 2
+          max_power: 12
+      - create_group: Living room lights
+        entities:
+          - entity_id: light.tv_lights
+            linear:
+              min_power: 2
+              max_power: 12
+          - entity_id: switch.living_room_lights_l1
+            name: Table light
+            fixed:
+              power: 15.5
+          - entity_id: switch.living_room_lights_l3
+            name: Sofa light
+            fixed:
+              power: 17
+          - entity_id: switch.living_room_lights_l2
+            fixed:
+              power: 10.2
+      - create_group: Kitchen lights
+        entities:
+          - entity_id: light.shelly_shsw_1_c45bbe76cec1
+            name: Kitchen strip
+            fixed:
+              power: 15
+          - entity_id: light.kitchen_lights_light_l2
+            name: Counter light
+            linear:
+              min_power: 2
+              max_power: 10
+          - entity_id: light.kitchen_lights_light_l1
+            name: Dinning light
+            linear:
+              min_power: 4
+              max_power: 15

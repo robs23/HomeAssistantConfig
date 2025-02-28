@@ -2,6 +2,8 @@
   name: Romantic
   entities:
     light.tv_lights:
+      min_color_temp_kelvin: 1700
+      max_color_temp_kelvin: 6535
       min_mireds: 153
       max_mireds: 588
       effect_list:
@@ -53,21 +55,21 @@
       supported_features: 44
       state: 'on'
     switch.living_room_lights_l1:
-      linkquality: 97
+      linkquality: 127
       state_l1: 'OFF'
       state_l2: 'OFF'
       state_l3: 'OFF'
       friendly_name: living_room_lights_l1
       state: 'off'
     switch.living_room_lights_l2:
-      linkquality: 97
+      linkquality: 127
       state_l1: 'OFF'
       state_l2: 'OFF'
       state_l3: 'OFF'
       friendly_name: living_room_lights_l2
       state: 'off'
     switch.living_room_lights_l3:
-      linkquality: 97
+      linkquality: 127
       state_l1: 'OFF'
       state_l2: 'OFF'
       state_l3: 'OFF'
@@ -75,6 +77,212 @@
       state: 'off'
     input_boolean.tv:
       editable: false
+      icon: mdi:television
       friendly_name: TV
       state: 'off'
   icon: mdi:heart
+  metadata: {}
+- id: '1672956582141'
+  name: Turn off heating schedules
+  entities:
+    switch.schedule_robocze:
+      weekdays:
+      - workday
+      timeslots:
+      - 00:00:00 - 05:30:00
+      - 05:30:00 - 07:00:00
+      - 07:00:00 - 15:00:00
+      - 15:00:00 - 19:00:00
+      - 19:00:00 - 00:00:00
+      entities:
+      - climate.0x842e14fffee19a4b_climate
+      actions:
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 22
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 23
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      current_slot: 4
+      next_slot: 0
+      next_trigger: '2023-01-06T00:00:00+01:00'
+      tags: []
+      icon: mdi:calendar-clock
+      friendly_name: Robocze
+      state: 'off'
+    switch.schedule_weekend_3:
+      weekdays:
+      - weekend
+      timeslots:
+      - 00:00:00 - 06:40:00
+      - 06:40:00 - 17:30:00
+      - 17:30:00 - 19:30:00
+      - 19:30:00 - 00:00:00
+      entities:
+      - climate.0x842e14fffee19a4b_climate
+      actions:
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        data:
+          temperature: 23
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      current_slot:
+      next_slot: 0
+      next_trigger: '2023-01-07T00:00:00+01:00'
+      tags: []
+      icon: mdi:calendar-clock
+      friendly_name: Weekend
+      state: 'off'
+    switch.schedule_robocze_2:
+      weekdays:
+      - workday
+      timeslots:
+      - 00:00:00 - 05:30:00
+      - 05:30:00 - 14:30:00
+      - 14:30:00 - 17:00:00
+      - 17:00:00 - 19:30:00
+      - 19:30:00 - 00:00:00
+      entities:
+      - climate.thermostat_in_bathroom
+      actions:
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        data:
+          temperature: 25
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      current_slot: 4
+      next_slot: 0
+      next_trigger: '2023-01-06T00:00:00+01:00'
+      tags: []
+      icon: mdi:calendar-clock
+      friendly_name: Robocze
+      state: 'off'
+    switch.schedule_weekend_2:
+      weekdays:
+      - weekend
+      timeslots:
+      - 00:00:00 - 05:40:00
+      - 05:40:00 - 14:30:00
+      - 14:30:00 - 17:00:00
+      - 17:00:00 - 19:50:00
+      - 19:50:00 - 00:00:00
+      entities:
+      - climate.thermostat_in_bathroom
+      actions:
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        data:
+          temperature: 24
+      - service: climate.set_temperature
+        data:
+          temperature: 17
+      current_slot:
+      next_slot: 0
+      next_trigger: '2023-01-07T00:00:00+01:00'
+      tags: []
+      icon: mdi:calendar-clock
+      friendly_name: Weekend
+      state: 'off'
+    switch.schedule_robocze_3:
+      weekdays:
+      - workday
+      timeslots:
+      - 00:00:00 - 08:00:00
+      - 08:00:00 - 14:00:00
+      - 14:00:00 - 18:30:00
+      - 18:30:00 - 00:00:00
+      entities:
+      - climate.thermostat_in_amelias_room
+      actions:
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 22
+      - service: climate.set_temperature
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      current_slot: 3
+      next_slot: 0
+      next_trigger: '2023-01-06T00:00:00+01:00'
+      tags: []
+      icon: mdi:calendar-clock
+      friendly_name: Robocze
+      state: 'off'
+    switch.schedule_weekend:
+      weekdays:
+      - weekend
+      timeslots:
+      - 00:00:00 - 07:40:00
+      - 07:40:00 - 19:00:00
+      - 19:00:00 - 00:00:00
+      entities:
+      - climate.thermostat_in_amelias_room
+      actions:
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        data:
+          temperature: 16
+      current_slot:
+      next_slot: 0
+      next_trigger: '2023-01-07T00:00:00+01:00'
+      tags: []
+      icon: mdi:calendar-clock
+      friendly_name: Weekend
+      state: 'off'
+  metadata:
+    switch.schedule_robocze:
+      entity_only: true
+    switch.schedule_weekend_3:
+      entity_only: true
+    switch.schedule_robocze_2:
+      entity_only: true
+    switch.schedule_weekend_2:
+      entity_only: true
+    switch.schedule_robocze_3:
+      entity_only: true
+    switch.schedule_weekend:
+      entity_only: true

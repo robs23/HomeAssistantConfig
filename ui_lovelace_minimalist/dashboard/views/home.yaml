@@ -1,6 +1,242 @@
 title: "Home"
 path: "Home"
 cards:
+  - type: custom:expander-card
+    gap: 0.1em
+    padding: 0em
+    clear: false
+    title: Aktywne alerty
+    overlay-margin: 2em
+    child-padding: 0.1em
+    button-background: white
+    title-card:
+      type: custom:mushroom-template-card
+      primary: |+
+        {% set alerts = states('sensor.active_alerts_number') | int %}
+        {% if alerts == 1 %}
+          Masz 1 aktywny alert
+        {% elif alerts >= 2 and alerts <= 4 %}
+          Masz {{ alerts }} aktywne alerty
+        {% else %}
+          Masz {{ alerts }} aktywnych alertów
+        {% endif %}
+
+      secondary: >-
+        {% set crit = states('sensor.active_crit_alerts_number') | int %}
+
+        {% set warn = states('sensor.active_warn_alerts_number') | int %}
+
+        {% set info = states('sensor.active_info_alerts_number') | int %}
+
+        {% if crit > 0 %}
+          🔥: {{ crit }} {{ ' - '}}   
+        {% endif %}
+
+        {% if warn > 0 %}
+          ⚠️: {{ warn }} {{ ' - '}}   
+        {% endif %}
+
+        {% if info > 0 %}
+          ℹ️: {{ info }} {{ ' - '}}   
+        {% endif %}
+
+        {% set sec = as_timestamp(now()) -
+        as_timestamp(states.sensor.active_alerts_number.last_changed) %}
+
+        {% set hr = (sec / 3600) | int %}
+
+        {% set min = sec / 60 - hr * 60 %}
+
+        {% if hr > 1 %}
+          {{ "%d" % (hr) }} godzin temu
+        {% elif hr > 0 and min > 4 %}
+          {{ "%d" % (hr) }} godzinę i {{ "%2d" % (min) }} minut temu
+        {% elif hr > 0 and min > 1 %}
+          {{ "%d" % (hr) }} godzinę i {{ "%2d" % (min) }} minuty temu
+        {% elif hr > 0 and min > 0 %}
+          {{ "%d" % (hr) }} godzinę {{ "%2d" % (min) }} minutę temu
+        {% elif min > 4 %}
+          {{ min | int }} minut temu
+        {% elif min > 1 %}
+          {{ min | int }} minuty temu
+        {% elif min > 0 %}
+          {{ min | int }} minutę temu
+        {% elif sec > 4 %}
+          {{ sec | int }} sekund temu
+        {% elif sec > 1 %}
+          {{ sec | int }} sekundy temu
+        {% elif sec > 0 %}
+          {{ sec | int }} sekundę temu
+        {% endif %}
+      icon: mdi:alert
+      entity: sensor.active_alerts_number
+      icon_color: white
+      grid_options:
+        columns: 12
+        rows: 1
+      badge_icon: ""
+      multiline_secondary: false
+      fill_container: false
+      tap_action:
+        action: more-info
+      hold_action:
+        action: more-info
+      double_tap_action:
+        action: none
+      card_mod:
+        style: |
+          ha-card {
+            color: white;
+            --primary-text-color: white;
+            --card-primary-color: white;
+            --card-secondary-color: white;
+            background-color: 
+                          {% if states('sensor.active_crit_alerts_number') | int > 0 %}
+                          rgba(251,13,13,1);
+                          {% elif states('sensor.active_warn_alerts_number') | int > 0 %}
+                          rgba(204,102,0,1);
+                          {% else %}
+                          rgba(68,115,158,1);
+                          {% endif %}
+            border-radius: 5px;
+          }
+    cards:
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Aktywne problemy
+          card_mod:
+            style: 
+              .: |
+                ha-card {
+                  color: white;
+                  background-color: rgba(251,13,13,1);
+                  border-radius: 5px;
+                  --primary-text-color: white;
+                  --paper-item-icon-color: white;
+                }
+              hui-toggle-entity-row$:
+                hui-generic-entity-row:
+                  $: |
+                    state-badge{
+                      display: none;
+                    }
+                    .text-content{
+                        margin-left: 0 !important;
+                    }
+                    .info{
+                      white-space: normal !important;
+                    }
+        filter:
+          include:
+            - entity_id: /^alert(.).*_crit_alert_active/
+              options: 
+                null
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: idle
+        sort:
+          method: last_changed
+          reverse: true
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Aktywne ostrzeżenia
+          card_mod:
+            style: 
+              .: |
+                ha-card {
+                  color: white;
+                  background-color: rgba(204,102,0,1);
+                  border-radius: 5px;
+                  --primary-text-color: white;
+                  --paper-item-icon-color: white;
+                }
+              hui-toggle-entity-row$:
+                hui-generic-entity-row:
+                  $: |
+                    state-badge{
+                      display: none;
+                    }
+                    .text-content{
+                        margin-left: 0 !important;
+                    }
+                    .info{
+                      white-space: normal !important;
+                    }
+        filter:
+          include:
+            - entity_id: /^alert(.).*_warn_alert_active/
+              options: 
+                null
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: idle
+        sort:
+          method: last_changed
+          reverse: true
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Aktywne powiadomienia
+          card_mod:
+            style: 
+              .: |
+                ha-card {
+                  color: white;
+                  background-color: rgba(68,115,158,1);
+                  border-radius: 5px;
+                  --primary-text-color: white;
+                  --paper-item-icon-color: white;
+                }
+              hui-toggle-entity-row$:
+                hui-generic-entity-row:
+                  $: |
+                    state-badge{
+                      display: none;
+                    }
+                    .text-content{
+                        margin-left: 0 !important;
+                    }
+                    .info{
+                      white-space: normal !important;
+                    }
+        filter:
+          include:
+            - entity_id: /^alert(.).*_info_alert_active/
+              options: 
+                null
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: idle
+        sort:
+          method: last_changed
+          reverse: true
+    visibility:
+      - condition: numeric_state
+        entity: sensor.active_alerts_number
+        above: 0
+    card_mod:
+      style: |
+        ha-card {
+          color: white;
+          --primary-text-color: white;
+          background-color: 
+                        {% if states('sensor.active_crit_alerts_number') | int > 0 %}
+                        rgba(251,13,13,1);
+                        {% elif states('sensor.active_warn_alerts_number') | int > 0 %}
+                        rgba(204,102,0,1);
+                        {% else %}
+                        rgba(68,115,158,1);
+                        {% endif %}
+          border-radius: 5px;
+        }
   - type: "custom:button-card"
     template: card_esh_welcome
     triggers_update: "input_boolean.minimalist_dropdown"
@@ -40,24 +276,54 @@ cards:
         variables:
           ulm_card_person_entity: person.robert
           ulm_card_person_use_entity_picture: true
+          ulm_card_person_battery: sensor.s20fe_battery_level
           ulm_card_person_zone1: zone.work
           ulm_card_person_zone2: zone.school
+          ulm_icon_hold_action: "call-service"
+          ulm_icon_hold_service: "script.notify_on_state_changed"
+          ulm_icon_hold_service_data:
+            the_entity: person.robert
+            the_state: '[[[ return states["person.robert"].state ]]]'
       - type: "custom:button-card"
         template: card_person
         entity: person.dominika
         variables:
           ulm_card_person_entity: person.dominika
           ulm_card_person_use_entity_picture: true
+          ulm_card_person_battery: sensor.iphone_dominika_battery_level
           ulm_card_person_zone1: zone.work
           ulm_card_person_zone2: zone.school
+          ulm_icon_hold_action: "call-service"
+          ulm_icon_hold_service: "script.notify_on_state_changed"
+          ulm_icon_hold_service_data:
+            the_entity: person.dominika
+            the_state: '[[[ return states["person.dominika"].state ]]]'
   - type: horizontal-stack
     cards:
       - type: 'custom:button-card'
         template: card_binary_sensor
         variables:
           ulm_card_binary_sensor_alert: true
-          ulm_show_last_changed: true
+          ulm_card_binary_sensor_show_last_changed: true
+          ulm_icon_hold_action: "call-service"
+          ulm_icon_hold_service: "script.notify_on_state_changed"
+          ulm_icon_hold_service_data:
+            the_entity: binary_sensor.home_occupancy
+            the_state: '[[[ return states["binary_sensor.home_occupancy"].state ]]]'
         entity: binary_sensor.home_occupancy
+      - type: 'custom:button-card'
+        tap_action:
+          action: assist
+          start_listening: true
+        entity: input_button.assist
+        icon: mdi:microphone
+        show_state: false
+        show_name: false
+        name: Assist
+        styles:
+          card:
+            - height: 67px
+            - width: 67px
   - type: "custom:button-card"
     template: card_title
     name: Pokoje
@@ -73,18 +339,18 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "kitchen"
-        label: '[[[ return states["sensor.kitchen_window_device_temperature"].state + "°C" ]]]'
+        label: '[[[ return states["sensor.kitchen_window_device_temperature"].state + "°C " + states["input_text.kitchen_icons"].state ]]]'
       - type: "custom:button-card"
         template:
           - card_esh_room
           - yellow_on
         name: Salon
-        entity: group.living_room_lights
+        entity: light.living_room_lights
         icon: mdi:sofa
         tap_action:
           action: navigate
           navigation_path: "living_room"
-        label: '[[[ return states["sensor.living_room_temperature"].state + "°C " + states["input_text.living_room_persons"].state ]]]'
+        label: '[[[ return states["sensor.living_room_temperature"].state + "°C " + states["input_text.living_room_icons"].state ]]]'
       - type: "custom:button-card"
         template:
           - card_esh_room
@@ -95,7 +361,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "amelia"
-        label: '[[[ return states["sensor.0x00158d00044bc01c_temperature"].state + "°C" ]]]'
+        label: '[[[ return states["sensor.0x00158d00044bc01c_temperature"].state + "°C " + states["input_text.amelia_icons"].state ]]]'
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
@@ -108,7 +374,7 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "bathroom"
-        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C" ]]]'
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C " + states["input_text.bathroom_icons"].state ]]]'
       - type: "custom:button-card"
         template:
           - card_esh_room
@@ -119,15 +385,74 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "hall"
-        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C" ]]]'
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C " + states["input_text.hall_icons"].state ]]]'
       - type: "custom:button-card"
         template:
           - card_esh_room
           - yellow_on
         name: Sypialnia
-        entity: light.bedroom_light
+        entity: light.bedside_lamp_local
         icon: mdi:bed-king
         tap_action:
           action: navigate
           navigation_path: "bedroom"
-        label: '[[[ return states["sensor.0x00158d00044c015e_temperature"].state + "°C " + states["input_text.bedroom_persons"].state ]]]'
+        label: '[[[ return states["sensor.0x00158d00044c015e_temperature"].state + "°C " + states["input_text.bedroom_icons"].state ]]]'
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template:
+          - card_esh_room
+          - yellow_on
+        name: Toaleta
+        entity: switch.toilet_light
+        icon: mdi:toilet
+        tap_action:
+          action: navigate
+          navigation_path: "toilet"
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C " + states["input_text.toilet_icons"].state ]]]'
+  - type: horizontal-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-pop-up
+            hash: '#players'
+            name: Players
+            icon: mdi:music
+          - type: custom:mini-media-player
+            entity: media_player.all_speakers
+            show_source: true
+            group: true
+            artwork: cover
+            icon: mdi:google-home
+            source: icon
+            shortcuts:
+              columns: 2 # Max buttons per row
+              rows: 2
+              buttons:
+                # Start predefined playlist
+                - id: "http://31.192.216.10/rmf_fm"
+                  name: RMF FM
+                  app_name: RMF FM
+                  type: music
+                  icon: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+                  entity_picture: "https://cdn-profiles.tunein.com/s1217/images/logoq.png?t=636353"
+                  entity_picture_local: "api/media_player_proxy/media_player.mini?token=38e210bffde0580fbe03323d52f293d463604cf553a96ba760f60d7e78966ec1&cache=2b8bd5b0bbf7376e"
+                - id: "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+                  name: RadioZET
+                  type: music
+      - type: conditional
+        conditions:
+          - entity: media_player.all_speakers
+            state: "playing"
+        card:
+          type: custom:bubble-card
+          card_type: button
+          button_type: custom
+          entity: media_player.all_speakers
+          name: Muza
+          icon: mdi:music
+          tap_action:
+            action: navigate
+            navigation_path: '#players'
+          hold_action:
+            action: toggle

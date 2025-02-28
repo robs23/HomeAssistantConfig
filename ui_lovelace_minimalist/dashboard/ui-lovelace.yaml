@@ -19,4 +19,7 @@ views:
   - !include /config/ui_lovelace_minimalist/dashboard/views/playing.yaml
   - !include /config/ui_lovelace_minimalist/dashboard/views/scenes.yaml
   - !include /config/ui_lovelace_minimalist/dashboard/views/service.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/updated.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/another.yaml
+  - !include /config/ui_lovelace_minimalist/dashboard/views/toilet.yaml
 

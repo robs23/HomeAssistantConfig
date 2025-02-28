@@ -48,6 +48,7 @@
     initial: off
   tv:
     name: TV
+    icon: mdi:television
     initial: off
   sleeping_mode:
     name: Sleeping mode
@@ -113,4 +114,6 @@
   home_occupancy:
     name: Home occupancy
     icon: mdi:walk
-    
+  living_room_auto_mode:
+    name: Living room auto mode
+    icon: mdi:home-automation

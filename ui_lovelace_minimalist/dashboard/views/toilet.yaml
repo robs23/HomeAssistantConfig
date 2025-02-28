@@ -1,0 +1,38 @@
+title: "toilet"
+path: "toilet"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: home
+      - type: "custom:button-card"
+        template: card_title
+        name: Toaleta
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        template: chip_navigate
+        variables:
+          ulm_chip_navigate_path: /dashboard-mobile/toilet_automations/
+          ulm_chip_navigate_icon: mdi:robot
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_binary_sensor
+        variables:
+          ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_show_last_changed: true
+          ulm_card_binary_sensor_name: "Ruch"
+        entity: binary_sensor.toilet_motion_sensor_occupancy
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: switch.toilet_light
+        variables:
+          ulm_card_light_name: Światło
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_popup: true

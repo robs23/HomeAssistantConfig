@@ -1,23 +1,24 @@
-- alias: Hall switch long
+- id: bc41257776114a15bd6b1987486eae4e
+  alias: Hall switch long
   trigger:
-    platform: event
+  - platform: event
     event_type: shellyforhass.click
     event_data:
       click_type: long
+  - platform: device
+    device_id: 23639f8c9df11614858925a040a79873
+    domain: shelly
+    type: long
+    subtype: button
   action:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: input_boolean.power_off_mode
-        state: 'on'
-      sequence:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.power_off_mode
-  - service: input_boolean.turn_on
+  - service: script.turn_on_standby_mode
+    data: {}
+  - service: media_extractor.play_media
+    data:
+      media_content_type: MUSIC
+      media_content_id: https://home.roszak.dev/local/sounds/Windows_XP_Shutdown.mp3
     target:
-      entity_id:
-      - input_boolean.power_off_mode
-  id: bc41257776114a15bd6b1987486eae4e
+      entity_id: media_player.kitchens_speaker
 - id: '1649360752443'
   alias: Romantic scene on
   description: ''
@@ -31,17 +32,13 @@
   - service: scene.create
     data:
       scene_id: living_room_snapshot
-      snapshot_entities: light.tv_lights
+      snapshot_entities:
+      - light.tv_lights
   - service: scene.turn_on
     data:
       transition: 4
     target:
       entity_id: scene.romantic
-  - service: spotcast.start
-    data:
-      entity_id: media_player.photo_frame
-      uri: spotify:playlist:1tJ1hLKSrihE72jetCGWuN
-      start_volume: 30
   mode: single
 - id: '1649360912116'
   alias: Romantic scene off
@@ -215,34 +212,78 @@
     entity_id: binary_sensor.0x00158d00057280cd_occupancy
     from: 'off'
     to: 'on'
+    id: living_room_occupancy
   - platform: state
     entity_id: binary_sensor.amelia_room_occupancy
     from: 'off'
     to: 'on'
+    id: amelia_room_occupancy
   - platform: state
     entity_id: binary_sensor.amelia_motion_sensor_2_occupancy
     to: 'on'
     from: 'off'
+    id: amelia_room_occupancy_2
   - platform: state
     entity_id: binary_sensor.kitchen_window_contact
     from: 'off'
     to: 'on'
+    id: kitchen_window_contact_open
   - platform: state
     entity_id: binary_sensor.main_door_contact
     from: 'off'
     to: 'on'
+    id: main_door_contact_open
   - platform: state
-    entity_id: binary_sensor.shelly_shsw_1_c45bbe75c8dd_switch
+    entity_id:
+    - binary_sensor.shelly_shsw_1_c45bbe75c8dd_switch
+    from: 'on'
+    to: 'off'
+    enabled: false
   - platform: state
-    entity_id: binary_sensor.shelly_shsw_1_c45bbe76cec1_switch
+    entity_id:
+    - binary_sensor.shelly_shsw_1_c45bbe76cec1_switch
+    from: 'on'
+    to: 'off'
+    enabled: false
   - platform: state
     entity_id: binary_sensor.main_door_contact
     from: 'on'
     to: 'off'
+    id: main_door_contact_close
   - platform: state
     entity_id: binary_sensor.kitchen_window_contact
     from: 'on'
     to: 'off'
+    id: kitchen_window_contact_close
+  - platform: state
+    entity_id:
+    - binary_sensor.shelly_shsw_1_c45bbe76cec1_switch
+    from: 'off'
+    to: 'on'
+    enabled: false
+  - platform: state
+    entity_id:
+    - binary_sensor.shelly_shsw_1_c45bbe75c8dd_switch
+    from: 'off'
+    to: 'on'
+    enabled: false
+  - platform: state
+    entity_id:
+    - binary_sensor.toilet_motion_sensor_occupancy
+    to: 'on'
+    id: toilet_occupancy
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_occupancy
+    to: 'on'
+    from: 'off'
+    id: living_room_presence
+  - platform: device
+    device_id: 23639f8c9df11614858925a040a79873
+    domain: shelly
+    type: single
+    subtype: button
+    id: Hall_top_light
   condition: []
   action:
   - service: input_boolean.turn_on
@@ -251,14 +292,15 @@
       entity_id: input_boolean.home_occupancy
   - service: input_text.set_value
     data:
-      value: '{{trigger.to_state.name}}'
+      value: '{{trigger.name}}'
     target:
       entity_id: input_text.home_occupancy_last_trigger
+    enabled: false
   - choose:
     - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: aqara_light_movement_sensor_occupancy
+      - condition: trigger
+        id:
+        - living_room_occupancy
       sequence:
       - service: input_text.set_value
         data:
@@ -266,9 +308,9 @@
         target:
           entity_id: input_text.home_occupancy_last_trigger
     - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: Hall light - Switch
+      - condition: trigger
+        id:
+        - Hall_top_light
       sequence:
       - service: input_text.set_value
         data:
@@ -276,9 +318,10 @@
         target:
           entity_id: input_text.home_occupancy_last_trigger
     - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: main_door_contact
+      - condition: trigger
+        id:
+        - main_door_contact_open
+        - main_door_contact_close
       sequence:
       - service: input_text.set_value
         data:
@@ -286,9 +329,10 @@
         target:
           entity_id: input_text.home_occupancy_last_trigger
     - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: kitchen_window_contact
+      - condition: trigger
+        id:
+        - kitchen_window_contact_close
+        - kitchen_window_contact_open
       sequence:
       - service: input_text.set_value
         data:
@@ -296,19 +340,10 @@
         target:
           entity_id: input_text.home_occupancy_last_trigger
     - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: Kitchen strip - Switch
-      sequence:
-      - service: input_text.set_value
-        data:
-          value: Kuchnia listwa
-        target:
-          entity_id: input_text.home_occupancy_last_trigger
-    - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: Amelia room occupancy
+      - condition: trigger
+        id:
+        - amelia_room_occupancy
+        - amelia_room_occupancy_2
       sequence:
       - service: input_text.set_value
         data:
@@ -316,13 +351,23 @@
         target:
           entity_id: input_text.home_occupancy_last_trigger
     - conditions:
-      - condition: state
-        entity_id: input_text.home_occupancy_last_trigger
-        state: amelia_motion_sensor_2_occupancy
+      - condition: trigger
+        id:
+        - toilet_occupancy
       sequence:
       - service: input_text.set_value
         data:
-          value: U Amelii
+          value: Toaleta
+        target:
+          entity_id: input_text.home_occupancy_last_trigger
+    - conditions:
+      - condition: trigger
+        id:
+        - living_room_presence
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: Salon
         target:
           entity_id: input_text.home_occupancy_last_trigger
     default: []
@@ -368,12 +413,18 @@
       data: {}
       target:
         entity_id: input_boolean.alarm_armed
+    - service: notify.mobile_app_s20fe
+      data:
+        message: clear_notification
+        data:
+          tag: set-away-mode
     else:
     - service: notify.mobile_app_s20fe
       data:
         message: 'Wykryto obecność: {{ states(''input_text.home_occupancy_last_trigger'')
           }}'
         title: Ruch w domu
+        tag: presence-while-away
   mode: single
 - id: '1656707995131'
   alias: Family_away
@@ -386,14 +437,65 @@
     to: not_home
     for:
       hours: 0
-      minutes: 20
+      minutes: 10
       seconds: 0
-  condition: []
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_boolean.home_occupancy
+      state: 'on'
   action:
-  - service: input_boolean.turn_on
+  - service: script.prepare_standby_mode
     data: {}
-    target:
-      entity_id: input_boolean.alarm_armed
+    response_variable: is_cancelled
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.home_occupancy
+        state: 'off'
+      - condition: state
+        entity_id: group.family
+        state: not_home
+        enabled: true
+      - alias: Jeśli is_cancelled != true
+        condition: template
+        value_template: '{{ is_cancelled.value != True }}'
+      sequence:
+      - service: script.turn_on_standby_mode
+        data: {}
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.alarm_armed
+      - condition: template
+        value_template: '{{ states.person.robert.last_changed > states.person.dominika.last_changed
+          }}
+
+          '
+      - service: notify.mobile_app_s20fe
+        data:
+          title: Alarm włączony
+          message: Jeśli wychodzisz na dłużej, możesz również ustawić Tryb nieobecności
+          data:
+            url: /ui-lovelace-minimalist/service
+            tag: set-away-mode
+            clickAction: /ui-lovelace-minimalist/service
+            actions:
+            - action: URI
+              title: Ustaw Tryb nieobecności
+              uri: /ui-lovelace-minimalist/service
+    - conditions:
+      - alias: Jeśli is_cancelled == true
+        condition: template
+        value_template: '{{ is_cancelled.value == True }}'
+      sequence:
+      - service: tts.google_translate_say
+        data:
+          cache: false
+          entity_id: media_player.photo_frame
+          message: Odwołano
+          language: pl
   mode: restart
 - id: '1657741030169'
   alias: Set living_room_persons
@@ -418,7 +520,7 @@
       sequence:
       - service: input_text.set_value
         data:
-          value: 👧👦
+          value: "\U0001F467\U0001F466"
         target:
           entity_id: input_text.living_room_persons
     - conditions:
@@ -433,7 +535,7 @@
       sequence:
       - service: input_text.set_value
         data:
-          value: 👦
+          value: "\U0001F466"
         target:
           entity_id: input_text.living_room_persons
     - conditions:
@@ -448,7 +550,7 @@
       sequence:
       - service: input_text.set_value
         data:
-          value: 👧
+          value: "\U0001F467"
         target:
           entity_id: input_text.living_room_persons
     default:
@@ -481,7 +583,7 @@
       sequence:
       - service: input_text.set_value
         data:
-          value: 👧👦
+          value: "\U0001F467\U0001F466"
         target:
           entity_id: input_text.bedroom_persons
     - conditions:
@@ -496,7 +598,7 @@
       sequence:
       - service: input_text.set_value
         data:
-          value: 👦
+          value: "\U0001F466"
         target:
           entity_id: input_text.bedroom_persons
     - conditions:
@@ -511,7 +613,7 @@
       sequence:
       - service: input_text.set_value
         data:
-          value: 👧
+          value: "\U0001F467"
         target:
           entity_id: input_text.bedroom_persons
     default:
@@ -521,3 +623,2026 @@
       target:
         entity_id: input_text.bedroom_persons
   mode: restart
+- id: '1662908720576'
+  alias: Heat season on
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: climate.thermostat_in_amelias_room
+    attribute: current_temperature
+    above: '25'
+  - platform: numeric_state
+    entity_id: climate.thermostat_in_bathroom
+    attribute: current_temperature
+    above: '25'
+  - platform: numeric_state
+    entity_id: sensor.living_room_temperature
+    above: '25'
+  condition: []
+  action:
+  - service: notify.mobile_app_s20fe
+    data:
+      message: "Palą\U0001F609"
+  mode: single
+- id: '1663872434066'
+  alias: Lucy is discharging
+  description: ''
+  triggers:
+  - entity_id: vacuum.lucy
+    attribute: battery_level
+    below: '70'
+    trigger: numeric_state
+    enabled: false
+  - entity_id: vacuum.lucy
+    attribute: battery_level
+    below: 50
+    trigger: numeric_state
+    enabled: false
+  - event_type: mobile_app_notification_action
+    event_data:
+      action: LUCY_GO_HOME
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: vacuum.lucy
+        state: cleaning
+    - condition: numeric_state
+      entity_id: vacuum.lucy
+      attribute: is_charge
+      above: '0'
+    enabled: false
+  actions:
+  - data:
+      message: Lucy rozładowuje się. Sprawdź czy jest poprawnie zadokowana
+      data:
+        tag: lucy-discharging
+        actions:
+        - action: LUCY_GO_HOME
+          title: Zadokuj Lucy
+    action: notify.mobile_app_s20fe
+    enabled: false
+  - choose:
+    - conditions:
+      - condition: time
+        after: 08:00:00
+        before: '20:00:00'
+      sequence:
+      - data:
+          entity_id: media_player.kitchens_speaker
+          message: Lucy ma słabą baterię. Sprawdź czy jest poprawnie zadokowana
+          language: pl
+        action: tts.google_translate_say
+        enabled: false
+      - action: script.speak
+        metadata: {}
+        data:
+          language: pl
+          player: media_player.kitchen_speaker
+          message: Lucy ma słabą baterię. Sprawdź czy jest poprawnie zadokowana
+    default: []
+    enabled: false
+  - wait_for_trigger:
+    - event_type: mobile_app_notification_action
+      event_data:
+        action: LUCY_GO_HOME
+      trigger: event
+    timeout:
+      hours: 1
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+    continue_on_timeout: false
+    enabled: false
+  - data: {}
+    target:
+      entity_id: vacuum.lucy
+    action: vacuum.return_to_base
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.tv
+        state: 'on'
+      sequence:
+      - data:
+          message: Lucy rozładowuje się. Sprawdź czy jest poprawnie zadokowana
+          title: Lucy rozładowuje się
+          data:
+            id: lucy_discharging
+            smallIcon: mdi:exclamation-thick
+            color: '#FF000F'
+            largeIcon: mdi:robot-vacuum
+            corner: top_end
+            seconds: 25
+        action: notify.tvoverlaynotify
+    enabled: false
+  mode: single
+- id: '1667767167289'
+  alias: Set icons when vacuuming
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    to: Bedroom
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    id: lucy_enter_bedroom
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    from: Bedroom
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    id: lucy_exit_bedroom
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    to: Kitchen
+    id: lucy_enter_kitchen
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    from: Kitchen
+    id: lucy_exit_kitchen
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    to: Living room
+    id: lucy_enter_living_room
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    from: Living room
+    id: lucy_exit_living_room
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    to: Hall
+    id: lucy_enter_hall
+  - platform: state
+    entity_id:
+    - camera.xiaomi_cloud_map_extractor
+    attribute: vacuum_room_name
+    from: Hall
+    id: lucy_exit_hall
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: lucy_enter_bedroom
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{ states('input_text.bedroom_icons') + '\U0001F9F9' }}"
+        target:
+          entity_id: input_text.bedroom_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_exit_bedroom
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{states('input_text.bedroom_icons') | replace('\U0001F9F9', '')
+            }}"
+        target:
+          entity_id: input_text.bedroom_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_exit_kitchen
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{states('input_text.kitchen_icons') | replace('\U0001F9F9', '')
+            }}"
+        target:
+          entity_id: input_text.kitchen_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_enter_kitchen
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{ states('input_text.kitchen_icons') + '\U0001F9F9' }}"
+        target:
+          entity_id: input_text.kitchen_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_enter_living_room
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{ states('input_text.living_room_icons') + '\U0001F9F9' }}"
+        target:
+          entity_id: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_exit_living_room
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{states('input_text.living_room_icons') | replace('\U0001F9F9',
+            '') }}"
+        target:
+          entity_id: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_enter_hall
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{ states('input_text.hall_icons') + '\U0001F9F9' }}"
+        target:
+          entity_id: input_text.hall_icons
+    - conditions:
+      - condition: trigger
+        id: lucy_exit_hall
+      sequence:
+      - service: input_text.set_value
+        data:
+          value: "{{states('input_text.hall_icons') | replace('\U0001F9F9', '') }}"
+        target:
+          entity_id: input_text.hall_icons
+  mode: parallel
+  max: 10
+- id: '1668374628401'
+  alias: Purge Db
+  description: Purges db every 10 days
+  trigger:
+  - platform: time
+    at: 05:00:00
+  condition:
+  - condition: template
+    value_template: as_timestamp(now()) - state_attr('input_datetime.last_db_purge_datetime',
+      'timestamp') >= 864000
+  action:
+  - service: recorder.purge
+    data: {}
+  - service: input_datetime.set_datetime
+    data:
+      datetime: '{{ now() }}'
+    target:
+      entity_id: input_datetime.last_db_purge_datetime
+  mode: single
+- id: '1669222553754'
+  alias: 'Toilet night light '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - light.toilet_light
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: time
+    after: '17:30:00'
+    before: '19:10:00'
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 18
+    target:
+      entity_id: light.toilet_light
+  mode: single
+- id: '1675462402769'
+  alias: Tv lights on
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_occupancy
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleeping_mode
+    state: 'off'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: light.tv_lights
+      state: 'on'
+    - condition: numeric_state
+      entity_id: sensor.0x00158d00057280cd_illuminance
+      below: 8
+  action:
+  - service: light.turn_on
+    data:
+      transition: 1
+      brightness_pct: 70
+    target:
+      entity_id: light.tv_lights
+  mode: single
+- id: '1675462680806'
+  alias: Tv lights off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_occupancy
+    to: 'off'
+    from: 'on'
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleeping_mode
+    state: 'off'
+  action:
+  - service: light.turn_off
+    data:
+      transition: 29
+    target:
+      entity_id: light.tv_lights
+  mode: single
+- id: '1676574974276'
+  alias: Set bedroom icons
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.bedroom_window_contact
+    from: 'off'
+    to: 'on'
+    id: bedroom_window_open
+    trigger: state
+  - entity_id:
+    - binary_sensor.bedroom_window_contact
+    from: 'on'
+    to: 'off'
+    id: bedroom_window_close
+    trigger: state
+  - entity_id:
+    - media_player.bedroom_speaker
+    to: playing
+    id: bedroom_speaker_play
+    trigger: state
+  - entity_id:
+    - media_player.bedroom_speaker
+    from: playing
+    id: bedroom_speaker_stop
+    trigger: state
+  - entity_id:
+    - binary_sensor.bedroom_tv
+    to: 'on'
+    id: bedroom_tv_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.bedroom_tv
+    from: 'on'
+    id: bedroom_tv_off
+    trigger: state
+  - entity_id:
+    - sensor.office_switch_power
+    attribute: power
+    above: 20
+    id: bedroom_office_on
+    trigger: numeric_state
+  - entity_id:
+    - sensor.office_switch_power
+    attribute: power
+    id: bedroom_office_off
+    below: 21
+    trigger: numeric_state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: bedroom_window_open
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001FA9F"
+          input_text: input_text.bedroom_icons
+    - conditions:
+      - condition: trigger
+        id: bedroom_window_close
+      sequence:
+      - data:
+          value: "{{states('input_text.bedroom_icons') | replace('\U0001FA9F', '')
+            }}"
+        target:
+          entity_id: input_text.bedroom_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id: bedroom_speaker_play
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F3B5"
+          input_text: input_text.bedroom_icons
+    - conditions:
+      - condition: trigger
+        id: bedroom_speaker_stop
+      sequence:
+      - data:
+          value: "{{states('input_text.bedroom_icons') | replace('\U0001F3B5', '')
+            }}"
+        target:
+          entity_id: input_text.bedroom_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id:
+        - bedroom_tv_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F4FA"
+          input_text: input_text.bedroom_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - bedroom_tv_off
+      sequence:
+      - data:
+          value: "{{states('input_text.bedroom_icons') | replace('\U0001F4FA', '')
+            }}"
+        target:
+          entity_id: input_text.bedroom_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id:
+        - bedroom_office_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F4BC"
+          input_text: input_text.bedroom_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - bedroom_office_off
+      sequence:
+      - data:
+          value: "{{states('input_text.bedroom_icons') | replace('\U0001F4BC', '')
+            }}"
+        target:
+          entity_id: input_text.bedroom_icons
+        action: input_text.set_value
+  mode: single
+- id: '1676576675788'
+  alias: Set living room icons
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.living_room_occupancy
+    to: 'on'
+    id: living_room_presence_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.living_room_occupancy
+    from: 'on'
+    id: living_room_presence_off
+    trigger: state
+  - entity_id:
+    - media_player.photo_frame
+    to: playing
+    id: living_room_speaker_play
+    trigger: state
+  - entity_id:
+    - media_player.photo_frame
+    from: playing
+    id: living_room_speaker_stop
+    trigger: state
+  - entity_id:
+    - binary_sensor.tv
+    to: 'on'
+    id: living_room_tv_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.tv
+    from: 'on'
+    id: living_room_tv_off
+    trigger: state
+  - entity_id:
+    - climate.0x842e14fffee19a4b_climate
+    attribute: hvac_action
+    to: heating
+    id: living_room_heating_on
+    trigger: state
+  - entity_id:
+    - climate.0x842e14fffee19a4b_climate
+    attribute: hvac_action
+    id: living_room_heating_off
+    from: heating
+    trigger: state
+  - entity_id:
+    - binary_sensor.balcony_door_sensor_balcony_door_sensor_contact
+    from: 'off'
+    to: 'on'
+    id: balcony_door_open
+    trigger: state
+  - entity_id:
+    - binary_sensor.balcony_door_sensor_balcony_door_sensor_contact
+    from: 'on'
+    to: 'off'
+    id: balcony_door_close
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: living_room_presence_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F6B6"
+          input_text: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id: living_room_presence_off
+      sequence:
+      - data:
+          value: "{{states('input_text.living_room_icons') | replace('\U0001F6B6',
+            '') }}"
+        target:
+          entity_id: input_text.living_room_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id: living_room_speaker_play
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F3B5"
+          input_text: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id: living_room_speaker_stop
+      sequence:
+      - data:
+          value: "{{states('input_text.living_room_icons') | replace('\U0001F3B5',
+            '') }}"
+        target:
+          entity_id: input_text.living_room_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id: living_room_tv_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F4FA"
+          input_text: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id: living_room_tv_off
+      sequence:
+      - data:
+          value: "{{states('input_text.living_room_icons') | replace('\U0001F4FA',
+            '') }}"
+        target:
+          entity_id: input_text.living_room_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id:
+        - living_room_heating_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F321️"
+          input_text: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - living_room_heating_off
+      sequence:
+      - data:
+          value: "{{states('input_text.living_room_icons') | replace('\U0001F321️',
+            '') }}"
+        target:
+          entity_id: input_text.living_room_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id:
+        - balcony_door_open
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001FA9F"
+          input_text: input_text.living_room_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - balcony_door_close
+      sequence:
+      - data:
+          value: "{{states('input_text.living_room_icons') | replace('\U0001FA9F',
+            '') }}"
+        target:
+          entity_id: input_text.living_room_icons
+        action: input_text.set_value
+  mode: single
+- id: '1676577427645'
+  alias: Set kitchen icons
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.kitchen_window_contact
+    from: 'off'
+    to: 'on'
+    id: kitchen_window_open
+    trigger: state
+  - entity_id:
+    - binary_sensor.kitchen_window_contact
+    from: 'on'
+    to: 'off'
+    id: kitchen_window_close
+    trigger: state
+  - entity_id:
+    - media_player.kitchens_speaker
+    to: playing
+    id: kitchen_speaker_play
+    trigger: state
+  - entity_id:
+    - media_player.kitchens_speaker
+    from: playing
+    id: kitchen_speaker_stop
+    trigger: state
+  - entity_id:
+    - binary_sensor.thermomix
+    to: 'on'
+    id: thermomix_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.thermomix
+    from: 'on'
+    id: thermomix_off
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: kitchen_window_open
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001FA9F"
+          input_text: input_text.kitchen_icons
+    - conditions:
+      - condition: trigger
+        id: kitchen_window_close
+      sequence:
+      - data:
+          value: "{{states('input_text.kitchen_icons') | replace('\U0001FA9F', '')
+            }}"
+        target:
+          entity_id: input_text.kitchen_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id: kitchen_speaker_play
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F3B5"
+          input_text: input_text.kitchen_icons
+    - conditions:
+      - condition: trigger
+        id: kitchen_speaker_stop
+      sequence:
+      - data:
+          value: "{{states('input_text.kitchen_icons') | replace('\U0001F3B5', '')
+            }}"
+        target:
+          entity_id: input_text.kitchen_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id: thermomix_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F468‍\U0001F373"
+          input_text: input_text.kitchen_icons
+    - conditions:
+      - condition: trigger
+        id: thermomix_off
+      sequence:
+      - data:
+          value: "{{states('input_text.kitchen_icons') | replace('\U0001F468‍\U0001F373',
+            '') }}"
+        target:
+          entity_id: input_text.kitchen_icons
+        action: input_text.set_value
+  mode: single
+- id: '1676579806678'
+  alias: Set toilet icons
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.toilet_motion_sensor_occupancy
+    to: 'on'
+    id: toilet_occupancy_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.toilet_motion_sensor_occupancy
+    from: 'on'
+    id: toilet_occupancy_off
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: toilet_occupancy_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F6B6"
+          input_text: input_text.toilet_icons
+    - conditions:
+      - condition: trigger
+        id: toilet_occupancy_off
+      sequence:
+      - data:
+          value: "{{states('input_text.toilet_icons') | replace('\U0001F6B6', '')
+            }}"
+        target:
+          entity_id: input_text.toilet_icons
+        action: input_text.set_value
+  mode: single
+- id: '1676580807775'
+  alias: Set Amelia icons
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.amelia_room_occupancy
+    to: 'on'
+    id: amelia_occupancy_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.amelia_room_occupancy
+    from: 'on'
+    id: amelia_occupancy_off
+    trigger: state
+  - entity_id:
+    - media_player.amelias_speaker
+    to: playing
+    id: amelia_speaker_play
+    trigger: state
+  - entity_id:
+    - media_player.amelias_speaker
+    from: playing
+    id: amelia_speaker_stop
+    trigger: state
+  - value_template: '{{ state_attr(''climate.thermostat_in_amelias_room'', ''current_temperature'')
+      | float < state_attr(''climate.thermostat_in_amelias_room'', ''temperature'')
+      | float }}'
+    id: amelia_heating_on
+    trigger: template
+  - value_template: '{{ state_attr(''climate.thermostat_in_amelias_room'', ''current_temperature'')
+      | float >= state_attr(''climate.thermostat_in_amelias_room'', ''temperature'')
+      | float }}'
+    id: amelia_heating_off
+    trigger: template
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: amelia_occupancy_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F6B6"
+          input_text: input_text.amelia_icons
+    - conditions:
+      - condition: trigger
+        id: amelia_occupancy_off
+      sequence:
+      - data:
+          value: "{{states('input_text.amelia_icons') | replace('\U0001F6B6', '')
+            }}"
+        target:
+          entity_id: input_text.amelia_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id: amelia_speaker_play
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F3B5"
+          input_text: input_text.amelia_icons
+    - conditions:
+      - condition: trigger
+        id: amelia_speaker_stop
+      sequence:
+      - data:
+          value: "{{states('input_text.amelia_icons') | replace('\U0001F3B5', '')
+            }}"
+        target:
+          entity_id: input_text.amelia_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id:
+        - amelia_heating_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F321️"
+          input_text: input_text.amelia_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - amelia_heating_off
+      sequence:
+      - data:
+          value: "{{states('input_text.amelia_icons') | replace('\U0001F321️', '')
+            }}"
+        target:
+          entity_id: input_text.amelia_icons
+        action: input_text.set_value
+  mode: single
+- id: '1676743838330'
+  alias: Window opens
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.kitchen_window_contact
+    from: 'off'
+    to: 'on'
+    id: kitchen_window_open
+    for:
+      hours: 0
+      minutes: 45
+      seconds: 0
+    trigger: state
+  - entity_id:
+    - binary_sensor.bedroom_window_contact
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 45
+      seconds: 0
+    id: bedroom_window_open
+    trigger: state
+  conditions:
+  - condition: numeric_state
+    entity_id: weather.dom
+    attribute: temperature
+    below: 5
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: kitchen_window_open
+      sequence:
+      - data:
+          message: Okno w kuchni jest otwarte powyżej 45 minut. Może warto je zamknąć?
+          title: Otwarte okno
+          data:
+            tag: kitchen-window-open
+        action: notify.mobile_app_s20fe
+      - condition: state
+        entity_id: binary_sensor.tv
+        state: 'on'
+      - data:
+          message: Okno w kuchni jest otwarte powyżej 45 minut
+          data:
+            id: notification_sample
+            smallIcon: mdi:exclamation-thick
+            color: '#FF000F'
+            largeIcon: mdi:window-closed-variant
+            corner: top_end
+            seconds: 25
+          title: Otwarte okno
+        action: notify.tvoverlaynotify
+    - conditions:
+      - condition: trigger
+        id: bedroom_window_open
+      sequence:
+      - data:
+          message: Okno w sypialni jest otwarte powyżej 45 minut. Może warto je zamknąć?
+          title: Otwarte okno
+          data:
+            tag: bedroom-window-open
+        action: notify.mobile_app_s20fe
+      - condition: state
+        entity_id: binary_sensor.tv
+        state: 'on'
+      - data:
+          message: Okno w sypialni jest otwarte powyżej 45 minut
+          data:
+            id: notification_sample
+            smallIcon: mdi:exclamation-thick
+            color: '#FF000F'
+            largeIcon: mdi:window-closed-variant
+            corner: top_end
+            seconds: 25
+          title: Otwarte okno
+        action: notify.tvoverlaynotify
+  mode: single
+- id: '1676744351984'
+  alias: Window closes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.kitchen_window_contact
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+    id: kitchen_window_close
+  - platform: state
+    entity_id:
+    - binary_sensor.bedroom_window_contact
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+    id: bedroom_window_close
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: kitchen_window_close
+      sequence:
+      - service: notify.mobile_app_s20fe
+        data:
+          message: clear_notification
+          data:
+            tag: kitchen-window-open
+    - conditions:
+      - condition: trigger
+        id: bedroom_window_close
+      sequence:
+      - service: notify.mobile_app_s20fe
+        data:
+          message: clear_notification
+          data:
+            tag: bedroom-window-open
+  mode: single
+- id: '1680551173836'
+  alias: Close bedroom blinds with window
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.bedroom_window_contact
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+  condition:
+  - condition: or
+    conditions:
+    - condition: time
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      - sat
+      - sun
+      after: '19:30:00'
+    - condition: sun
+      after: sunset
+  action:
+  - service: cover.close_cover
+    data: {}
+    target:
+      entity_id: cover.shelly_shsw_25_4c752533ee84
+  mode: single
+- id: '1682247095583'
+  alias: Goodnight story
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: media_player.play_media
+    data:
+      media_content_id: http://192.168.0.120:8000/fs/mnt/UsbDrive/AUDIO/Bajki/040.
+        Czupiradelka.mp3
+      media_content_type: music
+    target:
+      entity_id: media_player.bedroom_speaker
+  mode: single
+- id: '1683119327449'
+  alias: Mount Usb Drive audio
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - service: shell_command.mount_usb_drive
+    data: {}
+  mode: single
+- id: '1684697718630'
+  alias: Let know standby mode is cancelled
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.home_occupancy
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id:
+    - group.family
+    to: home
+  condition:
+  - condition: state
+    entity_id: input_boolean.i_am_home_listener
+    state: 'on'
+  action:
+  - service: tts.google_translate_say
+    data:
+      cache: false
+      entity_id: media_player.photo_frame
+      message: Odwołano
+      language: pl
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.home_occupancy
+  mode: single
+- id: '1686173366001'
+  alias: Set all speakers volume when playing
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.all_speakers
+    to: playing
+  condition:
+  - condition: state
+    entity_id: person.robert
+    state: home
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.6
+    target:
+      entity_id: media_player.kitchens_speaker
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.5
+    target:
+      entity_id: media_player.photo_frame
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.5
+    target:
+      entity_id: media_player.bedroom_speaker
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - media_player.all_speakers
+      from: playing
+      to:
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 30
+    timeout:
+      hours: 3
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+    continue_on_timeout: false
+  - service: media_player.volume_set
+    data:
+      volume_level: '{{ kitchen_speaker }}'
+    target:
+      entity_id: media_player.kitchens_speaker
+  - service: media_player.volume_set
+    data:
+      volume_level: '{{ bedroom_speaker }}'
+    target:
+      entity_id: media_player.photo_frame
+  - service: media_player.volume_set
+    data:
+      volume_level: '{{ photo_frame }}'
+    target:
+      entity_id: media_player.bedroom_speaker
+  variables:
+    kitchen_speaker: '{{ state_attr("media_player.kitchens_speaker", "volume_level")
+      }}'
+    bedroom_speaker: '{{ state_attr("media_player.bedroom_speaker", "volume_level")
+      }}'
+    photo_frame: '{{ state_attr("media_player.photo_frame", "volume_level") }}'
+  mode: single
+- id: '1689592004987'
+  alias: Lucy is docked again
+  description: Remove notification
+  trigger:
+  - platform: state
+    entity_id:
+    - vacuum.lucy
+    to: docked
+    from: idle
+  condition:
+  - condition: numeric_state
+    entity_id: vacuum.lucy
+    attribute: battery_level
+    below: 100
+  action:
+  - service: notify.mobile_app_s20fe
+    data:
+      data:
+        tag: lucy-discharging
+      message: clear_notification
+  mode: single
+- id: '1695667612549'
+  alias: Save sun data when shutter is adjusted
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - cover.shellyplus2pm_5443b23f2dec
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+    attribute: current_position
+    above: 30
+    below: 90
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    after: '14:00:00'
+    before: '19:00:00'
+  action:
+  - service: script.save_sun_data
+    data:
+      automation: true
+  mode: single
+- id: '1697388360521'
+  alias: Phone activated standby mode
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.s20fe_is_charging
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  condition:
+  - condition: time
+    after: '21:00:00'
+    before: 04:00:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+  action:
+  - if:
+    - condition: state
+      entity_id: binary_sensor.tv
+      state: 'on'
+    then:
+    - service: notify.mobile_app_s20fe
+      data:
+        data:
+          tag: standby-mode-confirmation
+          actions:
+          - action: STANDBY_MODE_CONFIRMATION
+            title: Wyłącz
+        message: Tv jest włączony. Wyłączyć wszystko mimo to?
+    - wait_for_trigger:
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: STANDBY_MODE_CONFIRMATION
+      timeout:
+        hours: 0
+        minutes: 10
+        seconds: 0
+        milliseconds: 0
+      continue_on_timeout: false
+    - service: script.turn_on
+      data: {}
+      target:
+        entity_id: script.turn_on_standby_mode
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - if:
+      - condition: state
+        entity_id: binary_sensor.all_devices
+        state: 'on'
+      then:
+      - service: script.turn_on
+        data: {}
+        target:
+          entity_id: script.turn_on_standby_mode
+    else:
+    - service: script.turn_on
+      data: {}
+      target:
+        entity_id: script.turn_on_standby_mode
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 10
+        milliseconds: 0
+    - if:
+      - condition: state
+        entity_id: binary_sensor.all_devices
+        state: 'on'
+      then:
+      - service: script.turn_on
+        data: {}
+        target:
+          entity_id: script.turn_on_standby_mode
+  mode: single
+- id: '1698156594568'
+  alias: Set bathroom icons
+  description: ''
+  triggers:
+  - value_template: '{{ state_attr(''climate.thermostat_in_bathroom'', ''current_temperature'')
+      | float < state_attr(''climate.thermostat_in_bathroom'', ''temperature'') |
+      float }}'
+    id: bathroom_heating_on
+    trigger: template
+  - value_template: '{{ state_attr(''climate.thermostat_in_bathroom'', ''current_temperature'')
+      | float >= state_attr(''climate.thermostat_in_bathroom'', ''temperature'') |
+      float }}'
+    id: bathroom_heating_off
+    trigger: template
+  - entity_id:
+    - binary_sensor.washing_machine
+    to: 'on'
+    id: bathroom_washing_machine_on
+    trigger: state
+  - entity_id:
+    - binary_sensor.washing_machine
+    id: bathroom_washing_machine_off
+    to: 'off'
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - bathroom_heating_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F321️"
+          input_text: input_text.bathroom_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - bathroom_heating_off
+      sequence:
+      - data:
+          value: "{{states('input_text.bathroom_icons') | replace('\U0001F321️', '')
+            }}"
+        target:
+          entity_id: input_text.bathroom_icons
+        action: input_text.set_value
+    - conditions:
+      - condition: trigger
+        id:
+        - bathroom_washing_machine_on
+      sequence:
+      - action: script.set_dashboard_icon
+        metadata: {}
+        data:
+          icon: "\U0001F9FA"
+          input_text: input_text.bathroom_icons
+    - conditions:
+      - condition: trigger
+        id:
+        - bathroom_washing_machine_off
+      sequence:
+      - data:
+          value: "{{states('input_text.bathroom_icons') | replace('\U0001F9FA', '')
+            }}"
+        target:
+          entity_id: input_text.bathroom_icons
+        action: input_text.set_value
+  mode: single
+- id: '1698693436955'
+  alias: Open cover when occupancy in living room
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_occupancy
+    to: 'on'
+    from: 'off'
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    after: 06:00:00
+    before: '11:00:00'
+  - condition: template
+    value_template: '{{ now() - states.cover.shellyplus2pm_5443b23f2dec.last_changed
+      >= timedelta(hours=4) }}'
+  - condition: numeric_state
+    entity_id: cover.shellyplus2pm_5443b23f2dec
+    attribute: current_position
+    below: 20
+  action:
+  - service: cover.open_cover
+    data: {}
+    target:
+      entity_id: cover.shellyplus2pm_5443b23f2dec
+  mode: single
+- id: '1698863260304'
+  alias: Stick to map when vauuming
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - vacuum.lucy
+    to: cleaning
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+  condition:
+  - condition: and
+    conditions:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: camera.xiaomi_cloud_map_extractor
+        attribute: vacuum_room_name
+        state: Hall
+      - condition: state
+        entity_id: camera.xiaomi_cloud_map_extractor
+        attribute: vacuum_room_name
+        state: Kitchen
+      - condition: state
+        entity_id: camera.xiaomi_cloud_map_extractor
+        attribute: vacuum_room_name
+        state: Living room
+      - condition: state
+        entity_id: camera.xiaomi_cloud_map_extractor
+        attribute: vacuum_room_name
+        state: Bedroom
+      - condition: state
+        entity_id: camera.xiaomi_cloud_map_extractor
+        attribute: vacuum_room_name
+        state: Bathroom
+    - condition: state
+      entity_id: input_boolean.stick_to_map_when_vacuuming
+      state: 'on'
+  action:
+  - service: vacuum.return_to_base
+    data: {}
+    target:
+      entity_id: vacuum.lucy
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - vacuum.lucy
+      to: docked
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 5
+    timeout:
+      hours: 1
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+    continue_on_timeout: false
+  - service: vacuum.start
+    data: {}
+    target:
+      entity_id: vacuum.lucy
+  mode: single
+- id: '1702485573577'
+  alias: Open shutter if window opens
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.bedroom_window_contact
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: cover.shelly_shsw_25_4c752533ee84
+    state: closed
+  action:
+  - service: cover.set_cover_position
+    target:
+      entity_id: cover.shelly_shsw_25_4c752533ee84
+    data:
+      position: 30
+  mode: single
+- id: '1705867622299'
+  alias: Notify if living room thermostat doesn't work
+  description: ''
+  triggers:
+  - entity_id:
+    - climate.0x842e14fffee19a4b_climate
+    attribute: temperature
+    trigger: state
+    id: target_temperature_changed
+  - entity_id:
+    - climate.0x842e14fffee19a4b_climate
+    attribute: current_temperature
+    trigger: state
+    id: current_temperature_changed
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - target_temperature_changed
+      - alias: Sprawdź czy temperatura docelowa rośnie
+        condition: template
+        value_template: '{{ trigger.from_state.attributes.temperature | float < trigger.to_state.attributes.temperature
+          | float }}'
+      - condition: template
+        value_template: '{{ state_attr(''climate.0x842e14fffee19a4b_climate'', ''current_temperature'')
+          < trigger.to_state.attributes.temperature | float }}'
+      sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.living_room_thermostat_not_working
+        data: {}
+      - variables:
+          previous_temperature: '{{ state_attr(''climate.0x842e14fffee19a4b_climate'',
+            ''current_temperature'') }}'
+          previous_temperature_set: '{{ state_attr(''climate.0x842e14fffee19a4b_climate'',
+            ''temperature'')}}'
+      - delay:
+          hours: 0
+          minutes: '{{ states(''input_number.time_before_thermostat_not_workin_alert_param'')
+            | int }}'
+          seconds: 0
+          milliseconds: 0
+      - condition: template
+        value_template: '{{ state_attr(''climate.0x842e14fffee19a4b_climate'', ''current_temperature'')
+          <= previous_temperature }}'
+      - condition: template
+        value_template: '{{ state_attr(''climate.0x842e14fffee19a4b_climate'', ''temperature'')
+          == previous_temperature_set }}'
+      - action: input_boolean.turn_on
+        target:
+          entity_id:
+          - input_boolean.living_room_thermostat_not_working
+        data: {}
+    - conditions:
+      - condition: trigger
+        id:
+        - current_temperature_changed
+      - condition: template
+        value_template: '{{ state_attr(''climate.0x842e14fffee19a4b_climate'', ''current_temperature'')
+          >= state_attr(''climate.0x842e14fffee19a4b_climate'', ''temperature'') }}'
+        alias: Temperature wzrosła
+      - condition: state
+        entity_id: input_boolean.living_room_thermostat_not_working
+        state: 'on'
+      sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.living_room_thermostat_not_working
+        data: {}
+  mode: restart
+- id: '1707125342835'
+  alias: Show cartoon chooser when occupancy change
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.living_room_occupancy
+    to: 'on'
+  condition:
+  - condition: time
+    after: 06:00:00
+    before: '11:00:00'
+    weekday:
+    - sun
+    - sat
+    - fri
+    - thu
+    - wed
+    - tue
+    - mon
+  action:
+  - service: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.choose_cartoon
+  - delay:
+      hours: 0
+      minutes: 3
+      seconds: 0
+      milliseconds: 0
+  - service: media_player.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: media_player.photo_frame
+  mode: single
+- id: '1711548254531'
+  alias: Scene switcher bedroom
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.scene_switcher_action
+    to: 1_single
+    id: switcher_1_single
+    enabled: false
+  - platform: state
+    entity_id:
+    - sensor.scene_switcher_action
+    to: 2_single
+    id: switcher_2_single
+    enabled: false
+  - platform: state
+    entity_id:
+    - sensor.scene_switcher_action
+    to: 3_single
+    id: switcher_3_single
+  - platform: state
+    entity_id:
+    - sensor.scene_switcher_action
+    to: 4_single
+    id: switcher_4_single
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - switcher_1_single
+      sequence:
+      - repeat:
+          sequence:
+          - service: light.turn_on
+            target:
+              entity_id: light.bedside_lamp_local
+            data:
+              brightness_step_pct: -10
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 0
+              milliseconds: 500
+          until:
+          - condition: state
+            entity_id: light.bedside_lamp_local
+            state: 'off'
+    - conditions:
+      - condition: trigger
+        id:
+        - switcher_2_single
+      sequence:
+      - repeat:
+          sequence:
+          - service: light.turn_on
+            target:
+              entity_id: light.bedside_lamp_local
+            data:
+              brightness_step_pct: 10
+          - delay:
+              hours: 0
+              minutes: 0
+              seconds: 0
+              milliseconds: 500
+          until:
+          - condition: state
+            entity_id: light.bedside_lamp_local
+            attribute: brightness
+            state: '250'
+    - conditions:
+      - condition: trigger
+        id:
+        - switcher_3_single
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: cover.shelly_shsw_25_4c752533ee84
+            state: closing
+          sequence:
+          - service: cover.stop_cover
+            target:
+              entity_id: cover.shelly_shsw_25_4c752533ee84
+            data: {}
+          alias: Bedroom blinds is closing
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: cover.shelly_shsw_25_4c752533ee84
+              state: closing
+          sequence:
+          - service: cover.close_cover
+            target:
+              entity_id: cover.shelly_shsw_25_4c752533ee84
+            data: {}
+          alias: Bedroom blinds isn't closing
+    - conditions:
+      - condition: trigger
+        id:
+        - switcher_4_single
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: cover.shelly_shsw_25_4c752533ee84
+            state: opening
+          sequence:
+          - service: cover.stop_cover
+            target:
+              entity_id: cover.shelly_shsw_25_4c752533ee84
+            data: {}
+          alias: Bedroom blinds is opening
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: cover.shelly_shsw_25_4c752533ee84
+              state: opening
+            alias: Bedroom blinds isn't opening
+          sequence:
+          - service: cover.open_cover
+            target:
+              entity_id: cover.shelly_shsw_25_4c752533ee84
+            data: {}
+  mode: single
+- id: '1713422292901'
+  alias: Reload Tuya Local
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: homeassistant.reload_config_entry
+    data:
+      entry_id: '{{ config_entry_id(''light.bedside_lamp_local'') }}'
+  mode: single
+- id: '1715200019760'
+  alias: Turn on light with living room roller shutter
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - cover.shellyplus2pm_5443b23f2dec
+    attribute: current_position
+    below: '30'
+  condition:
+  - condition: sun
+    after: sunset
+    after_offset: -00:30:00
+    enabled: true
+  - condition: sun
+    before: sunset
+    before_offset: +00:50:00
+    enabled: true
+  - condition: state
+    entity_id: light.living_room_lights
+    state: 'off'
+  - condition: state
+    entity_id: group.family
+    state: home
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.tv_lights
+    data:
+      brightness_pct: 66
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.tv
+      state: 'on'
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: template
+      value_template: '{{ now() - states.binary_sensor.living_room_occupancy.last_changed
+        >= timedelta(minutes=10) }}'
+    - condition: state
+      entity_id: binary_sensor.living_room_occupancy
+      state: 'off'
+    then:
+    - service: light.turn_off
+      target:
+        entity_id: light.tv_lights
+      data:
+        transition: 10
+  mode: single
+- id: '1728585328102'
+  alias: Turn on tv light with tv
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.tv
+    to: 'on'
+  conditions:
+  - condition: time
+    after: '20:00:00'
+    before: '23:00:00'
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data:
+      transition: 5
+      brightness_pct: 70
+    target:
+      entity_id: light.tv_lights
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - light.living_room_lights_l1
+      - light.living_room_lights_l2
+      - light.living_room_lights_l3
+  mode: single
+- id: '1736364908414'
+  alias: Conditional notifications
+  description: ''
+  triggers:
+  - trigger: event
+    event_type: call_service
+    event_data:
+      domain: notify
+      service: mobile_robert_at_home
+    id: mobile_robert_at_home
+  - trigger: event
+    event_type: call_service
+    event_data:
+      domain: notify
+      service: mobile_dominika_at_home
+    id: mobile_dominika_at_home
+  - trigger: event
+    event_type: call_service
+    event_data:
+      domain: notify
+      service: photo_frame
+    id: photo_frame
+  - trigger: event
+    event_type: call_service
+    event_data:
+      domain: notify
+      service: kitchen_speaker
+    id: kitchen_speaker
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - mobile_robert_at_home
+      - condition: state
+        entity_id: person.robert
+        state: home
+      sequence:
+      - action: notify.mobile_app_s20fe
+        metadata: {}
+        data:
+          message: '{{ trigger.event.data.service_data.message }}'
+          title: '{{ trigger.event.data.service_data.title }}'
+          data: '{{ trigger.event.data.service_data.data | default(''{}'') }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - mobile_dominika_at_home
+      - condition: state
+        state: home
+        entity_id: person.dominika
+      sequence:
+      - action: notify.mobile_app_iphone_dominika_2
+        metadata: {}
+        data:
+          message: '{{ trigger.event.data.service_data.message }}'
+          title: '{{ trigger.event.data.service_data.title }}'
+          data: '{{ trigger.event.data.service_data.data | default(''{}'') }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - photo_frame
+      - condition: state
+        entity_id: binary_sensor.allowed_speaker_alerts_param
+        state: 'on'
+      sequence:
+      - action: script.speak
+        metadata: {}
+        data:
+          language: pl
+          player: media_player.photo_frame
+          message: '{{ trigger.event.data.service_data.message }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - kitchen_speaker
+      - condition: state
+        entity_id: binary_sensor.allowed_speaker_alerts_param
+        state: 'on'
+      sequence:
+      - action: script.speak
+        metadata: {}
+        data:
+          language: pl
+          player: media_player.kitchens_speaker
+          message: '{{ trigger.event.data.service_data.message }}'
+  mode: single
+- id: '1737142510187'
+  alias: Gone shopping
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - person.robert
+    to:
+    - intermarche
+    - lidl
+    - biedronka_zwyciestwa
+    - dino_ujska
+    - dino_topolowa
+    id: shopping_on
+  - trigger: state
+    entity_id:
+    - person.robert
+    from:
+    - intermarche
+    - lidl
+    - biedronka_zwyciestwa
+    - dino_ujska
+    - dino_topolowa
+    id: shopping_off
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - shopping_on
+      - condition: template
+        value_template: '{{states(''todo.lista_zakupow'') | int > 0 or states(''todo.cookidoo_additional_purchases'')
+          | int > 0 or states(''todo.cookidoo_shopping_list'') | int > 0}}'
+        alias: Lista zakupów nie jest pusta
+      sequence:
+      - action: notify.mobile_app_s20fe
+        metadata: {}
+        data:
+          title: '{{ ''Witamy w '' + trigger.to_state.state }}'
+          message: '{{ ''Masz '' + (states(''todo.lista_zakupow'') | int + states(''todo.cookidoo_shopping_list'')
+            | int + states(''todo.cookidoo_additional_purchases'') | int) | string
+            + '' produktów do kupienia''}}'
+          data:
+            url: /todo?entity_id=todo.lista_zakupow
+            tag: shopping-notify
+            clickAction: /todo?entity_id=todo.lista_zakupow
+            actions:
+            - action: URI
+              title: Otwórz listę zakupów
+              uri: /todo?entity_id=todo.lista_zakupow
+    - conditions:
+      - condition: trigger
+        id:
+        - shopping_off
+      sequence:
+      - data:
+          message: clear_notification
+          data:
+            tag: shopping-notify
+        action: notify.mobile_app_s20fe
+        alias: Wyczyść powiadomienie
+  mode: single
+- id: '1738669468413'
+  alias: Turn on heating when washing machine is finishing
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.pralka_remaining_time_of_selected_program
+    below: 30
+  conditions:
+  - condition: state
+    entity_id: sensor.pralka_status
+    state: '6'
+  - condition: numeric_state
+    entity_id: climate.0x842e14fffee19a4b_climate
+    attribute: current_temperature
+    below: 22
+  - condition: numeric_state
+    entity_id: climate.0x842e14fffee19a4b_climate
+    attribute: temperature
+    below: 22
+  actions:
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      temperature: 23
+    target:
+      device_id: ae5ed2a21c6130481c7fd097af9f2d15
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  mode: single
+- id: '1740170479721'
+  alias: Turn off toilet light after 30 min of no occupancy
+  description: ''
+  triggers:
+  - trigger: template
+    value_template: "  {{ is_state('light.toilet_light', 'on') and \n   (as_timestamp(now())
+      - as_timestamp(states.light.toilet_light.last_changed)) > 1800 and \n   is_state('binary_sensor.toilet_motion_sensor_occupancy',
+      'off') and \n   (as_timestamp(now()) - as_timestamp(states.binary_sensor.toilet_motion_sensor_occupancy.last_changed))
+      > 1200}}"
+    alias: Swiatło świeci od 30 min i brak ruchu
+  conditions: []
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.toilet_light
+    data: {}
+  mode: single

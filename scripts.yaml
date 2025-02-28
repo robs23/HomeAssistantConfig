@@ -40,7 +40,7 @@ toilet_cleaning:
       - 0
       - 1
       - 1
-      - "{{state_attr('variable.vacuum_room_numbers', 'toilet')}}"
+      - '{{state_attr(''variable.vacuum_room_numbers'', ''toilet'')}}'
   mode: single
 bedroom_cleaning:
   alias: Bedroom cleaning
@@ -58,7 +58,7 @@ bedroom_cleaning:
       - 0
       - 1
       - 1
-      - "{{state_attr('variable.vacuum_room_numbers', 'bedroom')}}"
+      - '{{state_attr(''variable.vacuum_room_numbers'', ''bedroom'')}}'
   mode: single
 hall_cleaning:
   alias: Hall cleaning
@@ -76,7 +76,7 @@ hall_cleaning:
       - 0
       - 1
       - 1
-      - "{{state_attr('variable.vacuum_room_numbers', 'hall')}}"
+      - '{{state_attr(''variable.vacuum_room_numbers'', ''hall'')}}'
   mode: single
 amelias_cleaning:
   alias: Amelia's cleaning
@@ -112,7 +112,7 @@ kitchen_cleaning:
       - 0
       - 1
       - 1
-      - "{{state_attr('variable.vacuum_room_numbers', 'kitchen')}}"
+      - '{{state_attr(''variable.vacuum_room_numbers'', ''kitchen'')}}'
   mode: single
 living_room_cleaning:
   alias: Living room cleaning
@@ -130,9 +130,8 @@ living_room_cleaning:
       - 0
       - 1
       - 1
-      - "{{state_attr('variable.vacuum_room_numbers', 'living_room')}}"
+      - '{{state_attr(''variable.vacuum_room_numbers'', ''living_room'')}}'
   mode: single
-
 vacuum_follow_path:
   mode: single
   alias: Vacuum follow path
@@ -142,18 +141,531 @@ vacuum_follow_path:
     entity_id:
       name: Vacuum entity
   sequence:
-    - repeat:
-        count: "{{ path | length }}"
-        sequence:
-          - service: vacuum.send_command
-            data:
-              entity_id: "{{ entity_id }}"
-              command: app_goto_target
-              params: "{{ path[repeat.index-1] }}"
-          - wait_template: "{{ is_state(entity_id, 'cleaning') }}"
-            timeout: 00:00:30
-            continue_on_timeout: false
-          - delay: 00:00:01
-          - wait_template: "{{ is_state(entity_id, 'idle') or is_state(entity_id, 'paused') }}"
-            timeout: 00:05:00
-            continue_on_timeout: false
+  - repeat:
+      count: '{{ path | length }}'
+      sequence:
+      - service: vacuum.send_command
+        data:
+          entity_id: '{{ entity_id }}'
+          command: app_goto_target
+          params: '{{ path[repeat.index-1] }}'
+      - wait_template: '{{ is_state(entity_id, ''cleaning'') }}'
+        timeout: 00:00:30
+        continue_on_timeout: false
+      - delay: 00:00:01
+      - wait_template: '{{ is_state(entity_id, ''idle'') or is_state(entity_id, ''paused'')
+          }}'
+        timeout: 00:05:00
+        continue_on_timeout: false
+notify_on_state_changed:
+  alias: Notify on state changed
+  mode: parallel
+  fields:
+    the_entity:
+      description: Entity that will notify its state change
+      example: light.tv_lights
+    the_state:
+      description: Initial state of entity at the beginning
+      example: 'off'
+  sequence:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ expand(states.person) | selectattr(''attributes.user_id'',
+          ''eq'', context.user_id) | map(attribute=''attributes.friendly_name'')|first
+          ==''Robert''}}'
+      sequence:
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.notifying_entity_last_state
+        data:
+          value: '{{ states(the_entity) }}'
+      - service: notify.mobile_app_s20fe
+        data_template:
+          message: Dostaniesz powiadominie gdy {{state_attr(the_entity,'friendly_name')}}
+            zmieni swój stan. Aktualny stan to {{ the_state }}
+      - wait_template: '{{ not is_state(the_entity, the_state) }}'
+      - service: notify.mobile_app_s20fe
+        data_template:
+          message: Stan {{state_attr(the_entity,'friendly_name')}} zmienił się na
+            {{ states(the_entity)}}
+fstrim:
+  alias: Fstrim
+  sequence:
+  - service: shell_command.fstrim
+    data: {}
+  mode: single
+  icon: mdi:harddisk
+turn_on_standby_mode:
+  alias: Turn on standby mode
+  sequence:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.all_lights
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id: media_player.all_media_players
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.tv
+  mode: single
+prepare_standby_mode:
+  alias: Prepare standby mode
+  sequence:
+  - variables:
+      is_cancelled:
+        value: false
+  - data: {}
+    target:
+      entity_id: input_boolean.i_am_home_listener
+    action: input_boolean.turn_on
+  - data:
+      entity_id: media_player.photo_frame
+      message: Aby anulować Tryb oszczędzania energii, wykonaj dowolny ruch lub powiedz
+        I'm home
+      language: pl
+    action: tts.google_translate_say
+    enabled: false
+  - action: script.speak
+    metadata: {}
+    data:
+      language: pl
+      player: media_player.photo_frame
+      message: Aby anulować Tryb oszczędzania energii, wykonaj dowolny ruch lub powiedz
+        I'm home
+  - data:
+      data:
+        tag: stanby-mode-cancellation
+        actions:
+        - action: STANDBY_MODE_CANCELLATION
+          title: Anuluj
+      message: Anulować tryb oszczędzania energii?
+    action: notify.mobile_app_s20fe
+  - data:
+      message: Anulować tryb oszczędzania energii?
+      data:
+        tag: stanby-mode-cancellation
+        actions:
+        - action: STANDBY_MODE_CANCELLATION
+          title: Anuluj
+    enabled: true
+    action: notify.mobile_app_iphone_dominika_2
+  - wait_for_trigger:
+    - entity_id:
+      - input_boolean.home_occupancy
+      from: 'off'
+      to: 'on'
+      id: home_occupancy
+      trigger: state
+    - entity_id:
+      - group.family
+      to: home
+      id: family_home
+      trigger: state
+    - event_type: mobile_app_notification_action
+      event_data:
+        action: STANDBY_MODE_CANCELLATION
+      id: app_cancel
+      trigger: event
+    timeout:
+      hours: 0
+      minutes: 1
+      seconds: 30
+      milliseconds: 0
+    enabled: true
+  - data: {}
+    target:
+      entity_id: input_boolean.i_am_home_listener
+    action: input_boolean.turn_off
+  - data:
+      data:
+        tag: stanby-mode-cancellation
+      message: clear_notification
+    action: notify.mobile_app_s20fe
+  - variables:
+      is_cancelled: "{% if wait.trigger is not none and wait.trigger.id is defined
+        %}\n  {{ {\"value\": true} }}\n{% else %}\n  {{ {\"value\": false} }}\n{%
+        endif %}"
+    enabled: true
+  - stop: Finishing
+    response_variable: is_cancelled
+  mode: single
+play_nerwhal:
+  alias: Play deep link on netflix
+  sequence:
+  - service: androidtv.adb_command
+    data:
+      command: adb shell am start -c android.intent.category.LEANBACK_LAUNCHER -a
+        android.intent.action.VIEW -d "{{ deeplink }}" -f 0x10808000 -e source 30
+        com.netflix.ninja/.MainActivity
+    target:
+      entity_id: media_player.chromecast
+    enabled: true
+  mode: single
+  icon: mdi:netflix
+save_sun_data:
+  alias: Save sun data
+  sequence:
+  - service: notify.send_message
+    target:
+      entity_id: notify.sun_log
+    data:
+      message: "{{ now().strftime('%d/%m/%Y, %H:%M:%S') }}, {{\n    states.sensor.sun_azimuth.state
+        }}, {{ states.sensor.sun_elevation.state }}, {{ states.weather.dom.state }},
+        {{ states.sensor.weather_cloud_coverage.state }}, {{ state_attr('cover.shellyplus2pm_5443b23f2dec',
+        'current_position') }}, {{ automation }}, {{states(\"binary_sensor.tv\")}}"
+  mode: single
+  icon: mdi:sun-clock-outline
+ma_trial:
+  alias: MA trial
+  sequence:
+  - service: mass.play_media
+    target:
+      entity_id: media_player.photo_frame_2
+    data:
+      media_type: playlist
+      media_id: spotify:user:11163790546:collection
+  mode: single
+play_paw_patrol:
+  alias: Play paw patrol
+  sequence:
+  - service: script.watch_deeplink_on_netflix
+    data:
+      deeplink: http://www.netflix.com/watch/80026226
+  mode: single
+  icon: mdi:paw
+'1706606502083':
+  alias: Play gabby dollhouse
+  sequence:
+  - service: script.watch_deeplink_on_netflix
+    data:
+      deeplink: http://www.netflix.com/watch/81009946
+  mode: single
+  icon: mdi:cat
+'1706607173602':
+  alias: gabby
+  sequence:
+  - service: remote.turn_on
+    data:
+      activity: netflix://81009946
+    target:
+      entity_id: remote.chromecast
+watch_deeplink_on_netflix:
+  alias: watch_deeplink_on_netflix
+  sequence:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: remote.chromecast
+        state: 'off'
+      sequence:
+      - service: remote.turn_on
+        target:
+          entity_id: remote.chromecast
+        data: {}
+  - service: androidtv.adb_command
+    data:
+      command: adb shell am start -c android.intent.category.LEANBACK_LAUNCHER -a
+        android.intent.action.VIEW -d "{{ deeplink }}" -f 0x10808000 -e source 30
+        com.netflix.ninja/.MainActivity
+    target:
+      entity_id: media_player.chromecast
+    enabled: false
+  - service: script.turn_on_tv
+    data: {}
+    enabled: false
+  - parallel:
+    - service: script.turn_on_tv
+      data: {}
+    - service: androidtv.adb_command
+      data:
+        command: adb shell am start -c android.intent.category.LEANBACK_LAUNCHER -a
+          android.intent.action.VIEW -d "{{ deeplink }}" -f 0x10808000 -e source 30
+          com.netflix.ninja/.MainActivity
+      target:
+        entity_id: media_player.chromecast
+      enabled: true
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - repeat:
+      sequence:
+      - service: androidtv.adb_command
+        data:
+          command: adb shell am start -c android.intent.category.LEANBACK_LAUNCHER
+            -a android.intent.action.VIEW -d "{{ deeplink }}" -f 0x10808000 -e source
+            30 com.netflix.ninja/.MainActivity
+        target:
+          entity_id: media_player.chromecast
+        enabled: true
+        alias: Play chosen title
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      while:
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: media_player.chromecast
+          attribute: source
+          state: Netflix
+        alias: While source is not Netflix
+    alias: While source not Netflix, play chosen title
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: remote.send_command
+    target:
+      entity_id: remote.chromecast
+    data:
+      num_repeats: 1
+      delay_secs: 0.4
+      hold_secs: 0
+      command: MEDIA_PLAY
+    alias: Send play
+  mode: single
+  icon: mdi:netflix
+play_peppa_pig:
+  alias: Play Peppa pig
+  sequence:
+  - service: script.watch_deeplink_on_netflix
+    data:
+      deeplink: http://www.netflix.com/watch/80025494
+  mode: single
+  icon: mdi:pig-variant
+play_barbie_dreamhouse_adventures:
+  alias: Play barbie dreamhouse adventures
+  sequence:
+  - service: script.watch_deeplink_on_netflix
+    data:
+      deeplink: http://www.netflix.com/watch/80192734
+  mode: single
+  icon: mdi:netflix
+choose_cartoon:
+  alias: 'Choose cartoon '
+  sequence:
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.photo_frame
+    data:
+      media_content_id: dashboard-test/b
+      media_content_type: lovelace
+    metadata:
+      title: CARTOONS
+      thumbnail: https://brands.home-assistant.io/_/lovelace/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: lovelace
+        media_content_id: ''
+      - media_content_type: lovelace
+        media_content_id: dashboard-test
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - script.watch_deeplink_on_netflix
+      to: 'on'
+    timeout:
+      hours: 0
+      minutes: 3
+      seconds: 0
+      milliseconds: 0
+  - service: media_player.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: media_player.photo_frame
+  mode: single
+  icon: mdi:television-classic
+turn_on_tv:
+  alias: Turn on TV
+  sequence:
+  - repeat:
+      sequence:
+      - service: remote.send_command
+        data:
+          num_repeats: 1
+          delay_secs: 0.4
+          hold_secs: 0
+          command: b64:JgCMAJCTFDYTNhQ2ExITEhMRFBETEhM3FDUUNhQRExITEhMRFBEUERM3FBETERQRExITEhMSEzYUERM3EzYUNhM3FDUUNhQABgKVkRc1EzcTNhQRExITEhMSExITNhQ2EzcTERQRExITEhMSExITNhMSExITEhMRFBEUERM3ExITNhQ2EzcUNRM3EzcUAA0FAAAAAAAAAAAAAAAA
+        target:
+          entity_id: remote.broadlink_remote
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 15
+          milliseconds: 0
+      while:
+      - condition: numeric_state
+        entity_id: sensor.0x588e81fffed97f99_power
+        attribute: power
+        below: 10
+  mode: single
+  icon: mdi:television
+chromecast_to_family_account:
+  alias: Chromecast to family account
+  sequence:
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.chromecast
+    data:
+      command: am start -n com.google.android.apps.tv.launcherx/.profile.chooser.ProfileChooserActivity
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.chromecast
+    data:
+      command: LEFT
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.chromecast
+    data:
+      command: LEFT
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.chromecast
+    data:
+      command: CENTER
+  mode: single
+  icon: mdi:google-chrome
+change_dashboard_expanded_area:
+  alias: Change dashboard expanded area
+  sequence:
+  - action: input_select.select_option
+    target:
+      entity_id: input_select.dashboard_expanded_area
+    data:
+      option: '{{dashboard_area}}'
+    enabled: false
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.dashboard_expanded_area
+        state: '{{dashboard_area}}'
+      sequence:
+      - action: input_select.select_option
+        data:
+          option: Bedroom
+        target:
+          entity_id: input_select.dashboard_expanded_area
+    - conditions:
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: input_select.dashboard_expanded_area
+          state: '{{dashboard_area}}'
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.dashboard_expanded_area
+        data:
+          option: '{{dashboard_area}}'
+  fields:
+    dashboard_area:
+      selector:
+        text: {}
+      name: Dashboard Area
+      default: None
+  description: ''
+  icon: mdi:monitor-dashboard
+speak:
+  alias: Speak
+  sequence:
+  - if:
+    - condition: numeric_state
+      entity_id: sensor.eleven_labs_character_count
+      above: -1
+      below: 9800
+    then:
+    - action: tts.speak
+      metadata: {}
+      data:
+        cache: true
+        media_player_entity_id: '{{ player }}'
+        message: '{{ message }}'
+        language: '{{ language }}'
+      target:
+        entity_id: tts.elevenlabs
+      enabled: true
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 20
+        milliseconds: 0
+    - action: homeassistant.update_entity
+      data:
+        entity_id:
+        - sensor.eleven_labs_character_count
+    else:
+    - action: tts.google_translate_say
+      metadata: {}
+      data:
+        message: '{{ message }}'
+        language: '{{ language }}'
+        entity_id: '{{ player }}'
+    enabled: true
+  fields:
+    player:
+      selector:
+        entity:
+          multiple: false
+      name: player
+    message:
+      selector:
+        text:
+      name: message
+    language:
+      selector:
+        text:
+      name: Language
+      default: pl
+  description: ''
+  icon: mdi:account-voice
+set_dashboard_icon:
+  alias: Set_dashboard_icon
+  sequence:
+  - if:
+    - condition: template
+      value_template: '{{ icon not in states(input_text) }}'
+    then:
+    - data:
+        value: '{{ states(input_text) + icon }}'
+      target:
+        entity_id: '{{ input_text }}'
+      action: input_text.set_value
+  description: ''
+  fields:
+    icon:
+      selector:
+        text:
+      name: icon
+      required: true
+    input_text:
+      selector:
+        entity: {}
+      name: input_text
+      required: true

@@ -1,0 +1,191 @@
+living_room_thermostat_crit_alert_active:
+  name: Termostat w salonie nie działa
+  entity_id: input_boolean.living_room_thermostat_not_working
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - Głowica w salonie nie działa"
+  message: >
+    Głowica w salonie nie działa od {{ relative_time(states.input_boolean.living_room_thermostat_not_working.last_changed) }} \  
+    Temperatura docelowa: {{ state_attr('climate.0x842e14fffee19a4b_climate', 'current_temperature') }}, aktualna: {{ state_attr('climate.0x842e14fffee19a4b_climate', 'temperature') }}
+  done_message: "Głowica w salonie znowu działa od {{ as_timestamp(states.input_boolean.living_room_thermostat_not_working.last_changed) | timestamp_custom('%A %I:%M%p (%d-%b-%Y)') }}"
+  notifiers:
+    - mobile_apps_admin
+    - photo_frame
+  data:
+      tag: living-room-thermostat-alert
+
+kitchen_window_open_info_alert_active:
+  name: Okno w kuchni jest otwarte powyżej godziny
+  entity_id: binary_sensor.kitchen_window_open_alert
+  state: "on"
+  repeat:
+    - 60
+  can_acknowledge: true
+  title: "Info - Okno w kuchni jest otwarte powyżej {{ states('input_number.windows_open_time_alert_param')}} minut"
+  message: >
+    Okno w kuchni jest otwarte od {{ ((as_timestamp(now()) - as_timestamp(states.binary_sensor.kitchen_window_contact.last_changed)) / 60)| int}} minut
+  done_message: "Okno w kuchni zostało zamknięte"
+  notifiers:
+    - mobile_robert_at_home
+  data:
+      tag: kitchen-window-alert
+
+bedroom_window_open_info_alert_active:
+  name: Okno w sypialni jest otwarte powyżej godziny
+  entity_id: binary_sensor.bedroom_window_open_alert
+  state: "on"
+  repeat:
+    - 60
+  can_acknowledge: true
+  title: "Info - Okno w sypialni jest otwarte powyżej {{ states('input_number.windows_open_time_alert_param')}} minut"
+  message: >
+    Okno w sypialni jest otwarte od {{ ((as_timestamp(now()) - as_timestamp(states.binary_sensor.bedroom_window_contact.last_changed)) / 60)| int}} minut
+  done_message: "Okno w sypialni zostało zamknięte"
+  notifiers:
+    - mobile_robert_at_home
+  data:
+      tag: bedroom-window-alert
+
+lucy_discharging_warn_alert_active:
+  name: Zadokuj lucy bo się rozładowuje
+  entity_id: binary_sensor.lucy_is_discharging_alert
+  state: "on"
+  repeat:
+    - 30
+  can_acknowledge: true
+  title: "Ostrzeżenie - Lucy się rozładowuje. Pozostało {{ state_attr('vacuum.lucy', 'battery_level')}} %"
+  message: >
+    Lucy się rozładowuje. Pozostało {{ state_attr('vacuum.lucy', 'battery_level')}} %"
+  done_message: "Lucy została zadokowana"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: lucy-discharging-alert
+      actions:
+      - action: LUCY_GO_HOME
+        title: Zadokuj Lucy
+
+thermostat_in_living_room_battery_low_warn_alert_active:
+  name: Termostat w salonie ma słabą baterię
+  entity_id: binary_sensor.thermostat_in_living_room_battery_low
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - termostat w salonie ma słabą baterię"
+  message: >
+    Termostat w salonie ma słabą baterię
+  done_message: "Bateria w termostacie została wymieniana"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: thermostat-in-living-room-battery-low-alert
+
+thermostat_in_amelia_room_battery_low_warn_alert_active:
+  name: Termostat u Amelii ma słabą baterię
+  entity_id: binary_sensor.thermostat_in_amelias_room_battery_low
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - termostat u Amelii ma słabą baterię"
+  message: >
+    Termostat u Amelii ma słabą baterię
+  done_message: "Bateria w termostacie została wymieniana"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: thermostat-in-amelia-room-battery-low-alert
+
+thermostat_in_bathroom_battery_low_warn_alert_active:
+  name: Termostat w łazience ma słabą baterię
+  entity_id: binary_sensor.thermostat_in_amelias_room_battery_low
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - termostat w łazience ma słabą baterię"
+  message: >
+    Termostat w łazience ma słabą baterię
+  done_message: "Bateria w termostacie została wymieniana"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: thermostat-in-bathroom-battery-low-alert
+
+amelia_motion_sensor_battery_low_warn_alert_active:
+  name: Czujnik ruchu u Amelii ma słabą baterię
+  entity_id: binary_sensor.amelia_motion_sensor_battery_plus_low
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - Czujnik ruchu u Amelii ma słabą baterię"
+  message: >
+    Poziom naładowania czujnika ruchu u Amelii to {{ states('sensor.0x00158d0005729974_battery') | int }} 
+  done_message: "Bateria w czujniku ruchu została wymieniana"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: amelia-motion-sensor-battery-low-alert
+
+amelia_temperature_sensor_unresponsive_warn_alert_active:
+  name: Czujnik temperatury u Amelii nie działa
+  entity_id: binary_sensor.amelia_temperature_sensor_unresponsive_alert
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - Czujnik temperatury u Amelii nie działa"
+  message: >
+    Czujnik temperatury u Amelii nie raportuje od {{ ((as_timestamp(now()) - as_timestamp(states["sensor.0x00158d00044bc01c_temperature"].last_changed)) / 3600) | int }} godzin
+  done_message: "Czujnik temperatury u Amelii znów działa"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: amelia-temperature-sensor-unresponsive-alert
+
+
+bedroom_temperature_sensor_unresponsive_warn_alert_active:
+  name: Czujnik temperatury w sypialni nie działa
+  entity_id: binary_sensor.bedroom_temperature_sensor_unresponsive_alert
+  state: "on"
+  repeat:
+    - 120
+  can_acknowledge: true
+  title: "Ostrzeżenie - Czujnik temperatury w sypialni nie działa"
+  message: >
+    Czujnik temperatury w sypialni nie raportuje od {{ ((as_timestamp(now()) - as_timestamp(states["sensor.0x00158d00044c015e_temperature"].last_changed)) / 3600) | int }} godzin
+  done_message: "Czujnik temperatury w sypialni znów działa"
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: bedroom-temperature-sensor-unresponsive-alert
+
+robert_mobile_discharging_warn_alert_active:
+  name: Telefon Roberta się rozładowuje
+  entity_id: binary_sensor.robert_mobile_discharging_alert
+  state: "on"
+  repeat:
+    - 60
+  can_acknowledge: true
+  title: "Ostrzeżenie - Telefon Roberta się rozładowuje"
+  message: >
+    Pozostało {{ states('sensor.s20fe_battery_level') }} procent baterii
+  done_message: clear_notification
+  notifiers:
+    - mobile_robert_at_home
+    - kitchen_speaker
+  data:
+      tag: robert-mobile-discharging-alert
+
+

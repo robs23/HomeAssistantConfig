@@ -1,0 +1,14 @@
+  assistant_relay:
+    url: http://192.168.0.115:3000/assistant
+    method: "post"
+    content_type: "application/json"
+    payload: '{"command":"{{ command }}", "user":"Robert"}'
+
+  tvoverlay:
+    url: http://192.168.0.114:5001/set/overlay
+    method: POST
+    verify_ssl: false
+    headers:
+      accept: 'application/json'
+    content_type:  'application/json; charset=utf-8'
+    payload: '{{ payload }}'

@@ -1,0 +1,523 @@
+title: "updated"
+path: "updated"
+cards:
+  - type: custom:expander-card
+    style: |
+      :host {
+        z-index: 999;
+        position: sticky;
+        position: -webkit-sticky;
+        top: var(--header-height);
+      }
+      ha-card {
+        border-style: solid;
+        border-radius: 15px;        
+      }
+    clear: true
+    cards:
+    - type: glance
+      entities:
+        - entity: sun.sun
+        - entity: sun.sun
+        - entity: sun.sun
+        - entity: sun.sun
+  - type: custom:expander-card
+    gap: 0.1em
+    padding: 0em
+    clear: false
+    title: Aktywne alerty
+    overlay-margin: 2em
+    child-padding: 0.1em
+    button-background: white
+    title-card:
+      type: custom:mushroom-template-card
+      primary: |+
+        {% set alerts = states('sensor.active_alerts_number') | int %}
+        {% if alerts == 1 %}
+          Masz 1 aktywny alert
+        {% elif alerts >= 2 and alerts <= 4 %}
+          Masz {{ alerts }} aktywne alerty
+        {% else %}
+          Masz {{ alerts }} aktywnych alertów
+        {% endif %}
+
+      secondary: >-
+        {% set crit = states('sensor.active_crit_alerts_number') | int %}
+
+        {% set warn = states('sensor.active_warn_alerts_number') | int %}
+
+        {% set info = states('sensor.active_info_alerts_number') | int %}
+
+        {% if crit > 0 %}
+          🔥: {{ crit }} {{ ' - '}}   
+        {% endif %}
+
+        {% if warn > 0 %}
+          ⚠️: {{ warn }} {{ ' - '}}   
+        {% endif %}
+
+        {% if info > 0 %}
+          ℹ️: {{ info }} {{ ' - '}}   
+        {% endif %}
+
+        {% set sec = as_timestamp(now()) -
+        as_timestamp(states.sensor.active_alerts_number.last_changed) %}
+
+        {% set hr = (sec / 3600) | int %}
+
+        {% set min = sec / 60 - hr * 60 %}
+
+        {% if hr > 1 %}
+          {{ "%d" % (hr) }} godzin temu
+        {% elif hr > 0 and min > 4 %}
+          {{ "%d" % (hr) }} godzinę i {{ "%2d" % (min) }} minut temu
+        {% elif hr > 0 and min > 1 %}
+          {{ "%d" % (hr) }} godzinę i {{ "%2d" % (min) }} minuty temu
+        {% elif hr > 0 and min > 0 %}
+          {{ "%d" % (hr) }} godzinę {{ "%2d" % (min) }} minutę temu
+        {% elif min > 4 %}
+          {{ min | int }} minut temu
+        {% elif min > 1 %}
+          {{ min | int }} minuty temu
+        {% elif min > 0 %}
+          {{ min | int }} minutę temu
+        {% elif sec > 4 %}
+          {{ sec | int }} sekund temu
+        {% elif sec > 1 %}
+          {{ sec | int }} sekundy temu
+        {% elif sec > 0 %}
+          {{ sec | int }} sekundę temu
+        {% endif %}
+      icon: mdi:alert
+      entity: sensor.active_alerts_number
+      icon_color: white
+      grid_options:
+        columns: 12
+        rows: 1
+      badge_icon: ""
+      multiline_secondary: false
+      fill_container: false
+      tap_action:
+        action: more-info
+      hold_action:
+        action: more-info
+      double_tap_action:
+        action: none
+      card_mod:
+        style: |
+          ha-card {
+            color: white;
+            --primary-text-color: white;
+            --card-primary-color: white;
+            --card-secondary-color: white;
+            background-color: 
+                          {% if states('sensor.active_crit_alerts_number') | int > 0 %}
+                          rgba(251,13,13,1);
+                          {% elif states('sensor.active_warn_alerts_number') | int > 0 %}
+                          rgba(204,102,0,1);
+                          {% else %}
+                          rgba(68,115,158,1);
+                          {% endif %}
+            border-radius: 5px;
+          }
+    cards:
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Aktywne problemy
+          card_mod:
+            style: |
+              ha-card {
+                color: white;
+                background-color: rgba(251,13,13,1);
+                border-radius: 5px;
+                --primary-text-color: white;
+                --paper-item-icon-color: white;
+              }
+        filter:
+          include:
+            - entity_id: /^alert(.).*_crit_alert_active/
+              options: null
+          exclude:
+            - state: "off"
+            - state: unavailable
+        sort:
+          method: last_changed
+          reverse: true
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Aktywne ostrzeżenia
+          card_mod:
+            style: |
+              ha-card {
+                color: white;
+                background-color: rgba(204,102,0,1);
+                border-radius: 5px;
+                --primary-text-color: white;
+                --paper-item-icon-color: white;
+              }
+        filter:
+          include:
+            - entity_id: /^alert(.).*_warn_alert_active/
+              options: null
+          exclude:
+            - state: "off"
+            - state: unavailable
+        sort:
+          method: last_changed
+          reverse: true
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Aktywne powiadomienia
+          card_mod:
+            style: |
+              ha-card {
+                color: white;
+                background-color: rgba(68,115,158,1);
+                border-radius: 5px;
+                --primary-text-color: white;
+                --paper-item-icon-color: white;
+              }
+        filter:
+          include:
+            - entity_id: /^alert(.).*_info_alert_active/
+              options: null
+          exclude:
+            - state: "off"
+            - state: unavailable
+        sort:
+          method: last_changed
+          reverse: true
+    visibility:
+      - condition: numeric_state
+        entity: sensor.active_alerts_number
+        above: 0
+    card_mod:
+      style: |
+        ha-card {
+          color: white;
+          --primary-text-color: white;
+          background-color: 
+                        {% if states('sensor.active_crit_alerts_number') | int > 0 %}
+                        rgba(251,13,13,1);
+                        {% elif states('sensor.active_warn_alerts_number') | int > 0 %}
+                        rgba(204,102,0,1);
+                        {% else %}
+                        rgba(68,115,158,1);
+                        {% endif %}
+          border-radius: 5px;
+        }
+  - type: "custom:button-card"
+    template: card_esh_welcome
+    triggers_update: "input_boolean.minimalist_dropdown"
+    variables:
+      ulm_card_esh_welcome_collapse: input_boolean.minimalist_dropdown
+      ulm_weather: "weather.dom"
+      entity_1:
+        nav: "climate"
+        icon: "mdi:home-thermometer"
+        name: "Temperatura"
+        color: "red"
+      entity_2:
+        nav: "lights"
+        icon: "mdi:lightbulb"
+        name: "Światło"
+        color: "yellow"
+      entity_3:
+        nav: "playing"
+        icon: "mdi:play-circle"
+        name: Media
+        color: "green"
+      entity_4:
+        nav: "scenes"
+        icon: "mdi:magic-staff"
+        name: Sceny
+        color: "purple"
+      entity_5:
+        nav: "service"
+        icon: "mdi:wrench"
+        name: "Serwis"
+        color: "blue"
+  - type: vertical-stack
+    cards:
+      - type: custom:auto-entities
+        show_empty: false
+        card:
+          type: entities
+          title: Active Warnings
+          card_mod:
+            style: |
+              ha-card {
+                background-color: rgba(204,102,0,1);
+                border-radius: 5px;
+                --primary-color: white;
+                --paper-item-icon-color: white;
+                --secondary-text-color: white;
+              }
+        filter:
+          include:
+            - entity_id: "/^alert(.).*_warn_alert_active/"
+              options:
+                secondary_info: last-changed
+          exclude:
+            - state: "off"
+            - state: idle
+            - state: unavailable
+        sort:
+          method: last_changed
+          reverse: true
+
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_person
+        entity: person.robert
+        variables:
+          ulm_card_person_entity: person.robert
+          ulm_card_person_use_entity_picture: true
+          ulm_card_person_battery: sensor.s20fe_battery_level
+          ulm_card_person_zone1: zone.work
+          ulm_card_person_zone2: zone.school
+      - type: "custom:button-card"
+        template: card_person
+        entity: person.dominika
+        variables:
+          ulm_card_person_entity: person.dominika
+          ulm_card_person_use_entity_picture: true
+          ulm_card_person_battery: sensor.iphone_dominika_battery_level
+          ulm_card_person_zone1: zone.work
+          ulm_card_person_zone2: zone.school
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template: card_binary_sensor
+        variables:
+          ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_show_last_changed: true
+        entity: binary_sensor.home_occupancy
+      - type: 'custom:button-card'
+        tap_action:
+          action: assist
+          start_listening: true
+        entity: input_button.assist
+        icon: mdi:microphone
+        show_state: false
+        show_name: false
+        name: Assist
+        styles:
+          card:
+            - height: 67px
+            - width: 67px
+  - type: "custom:button-card"
+    template: card_title
+    name: Pokoje
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - yellow_no_state
+        name: Kuchnia
+        entity: sensor.kitchen_window_device_temperature
+        label: '[[[ return states["sensor.kitchen_window_device_temperature"].state + "°C " + states["input_text.kitchen_icons"].state ]]]'
+        icon: mdi:silverware-fork-knife
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/kitchen'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: light.kitchen_lights
+            templates:
+              - yellow_on
+            tap_action:
+              action: toggle
+          entity_2:
+            entity_id: media_player.kitchens_speaker
+            templates:
+              - blue_playing
+            tap_action:
+              action: toggle
+          entity_3:
+            entity_id: binary_sensor.kitchen_window_contact
+            templates:
+              - blue_on
+            tap_action:
+              action: none
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - red_no_state
+        name: Salon
+        entity: sensor.living_room_temperature
+        label: '[[[ return states["sensor.living_room_temperature"].state + "°C " + states["input_text.living_room_icons"].state ]]]'
+        icon: mdi:sofa
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/living_room'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: group.living_room_lights
+            templates:
+              - yellow_on
+            tap_action:
+              action: toggle
+          entity_2:
+            entity_id: input_boolean.tv
+            templates:
+              - blue_on
+            tap_action:
+              action: toggle
+          entity_3:
+            entity_id: binary_sensor.0x00158d00057280cd_occupancy
+            templates:
+              - blue_on
+            tap_action:
+              action: none
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - pink_no_state
+        name: Amelia
+        entity: sensor.0x00158d00044bc01c_temperature
+        label: '[[[ return states["sensor.0x00158d00044bc01c_temperature"].state + "°C " + states["input_text.amelia_icons"].state ]]]'
+        icon: mdi:teddy-bear
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/amelia'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: light.0xbc33acfffe6d82d0_light
+            templates:
+              - yellow_on
+            tap_action:
+              action: toggle
+          entity_2:
+            entity_id: media_player.amelias_speaker
+            templates:
+              - blue_playing
+            tap_action:
+              action: toggle
+          entity_3:
+            entity_id: binary_sensor.amelia_room_occupancy
+            templates:
+              - blue_on
+            tap_action:
+              action: none
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - purple_no_state
+        name: Sypialnia
+        entity: sensor.0x00158d00044c015e_temperature
+        label: '[[[ return states["sensor.0x00158d00044c015e_temperature"].state + "°C " + states["input_text.bedroom_icons"].state ]]]'
+        icon: mdi:bed-king
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/bedroom'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: cover.shelly_shsw_25_4c752533ee84
+            templates:
+              - blue_on
+            tap_action:
+              action: toggle
+          entity_2:
+            entity_id: media_player.bedroom_speaker
+            templates:
+              - blue_playing
+            tap_action:
+              action: toggle
+          entity_3:
+            entity_id: binary_sensor.bedroom_window_contact
+            templates:
+              - blue_on
+            tap_action:
+              action: none
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - blue_no_state
+        name: Łazienka
+        entity: sensor.bathroom_temperature
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C " + states["input_text.bathroom_icons"].state ]]]'
+        icon: mdi:shower
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/bathroom'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: climate.thermostat_in_bathroom
+            templates:
+              - yellow_on
+            tap_action:
+              action: toggle
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - green_no_state
+        name: Korytarz
+        entity: sensor.bathroom_temperature
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C " + states["input_text.bedroom_icons"].state ]]]'
+        icon: mdi:shoe-print
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/hall'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: light.shelly_shsw_1_c45bbe75c8dd
+            templates:
+              - yellow_on
+            tap_action:
+              action: toggle
+          entity_2:
+            entity_id: binary_sensor.main_door_contact
+            templates:
+              - blue_on
+            tap_action:
+              action: none
+  - type: horizontal-stack
+    cards:
+      - type: 'custom:button-card'
+        template:
+          - card_room
+          - grey_no_state
+        name: Toaleta
+        entity: sensor.bathroom_temperature
+        label: '[[[ return states["sensor.bathroom_temperature"].state + "°C " + states["input_text.bathroom_icons"].state ]]]'
+        icon: mdi:toilet
+        tap_action:
+          action: navigate
+          navigation_path: '/ui-lovelace-minimalist/toilet'
+        variables:
+          label_use_temperature: true
+          label_use_brightness: false
+          entity_1:
+            entity_id: switch.toilet_light
+            templates:
+              - yellow_on
+            tap_action:
+              action: toggle
+      
+      
+      

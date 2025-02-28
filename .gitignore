@@ -14,6 +14,7 @@ __pycache__/
 *.html
 *.log
 *.ppk
+*.wav
 OZW_Log.txt
 home-assistant.log*
 appdaemon.log
@@ -43,3 +44,4 @@ blueprints
 HassioSyncer-26c30f602b6d.json
 share/authorized_keys
 Home Assistant configuration.yaml
+addons_config/guacamole/*

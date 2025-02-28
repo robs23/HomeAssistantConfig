@@ -17,6 +17,169 @@ cards:
         entity: input_boolean.alarm_armed
         variables:
           ulm_card_input_boolean_name: Alarm
+      - type: 'custom:button-card'
+        template: card_script
+        variables:
+          ulm_card_script_title: Wyczyść dysk
+          ulm_card_script_icon: 'mdi:harddisk'
+        tap_action:
+          action: call-service
+          service: script.turn_on
+          service_data:
+            entity_id: script.fstrim
+      - type: 'custom:button-card'
+        template: card_script
+        variables:
+          ulm_card_script_title: Słońce
+          ulm_card_script_icon: 'mdi:sun-clock'
+        tap_action:
+          action: call-service
+          service: script.turn_on
+          service_data:
+            entity_id: script.save_sun_data
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        title: Tryb nieobecności
+        cards: 
+          - type: entities
+            entities:
+              - entity: input_boolean.away_mode
+                name: Tryb nieobecności
+                icon: mdi:island
+          - type: conditional
+            conditions:
+              - entity: input_boolean.away_mode
+                state: "on"
+              - entity: timer.away_mode_setting_timer
+                state: "active"
+            card:
+              type: custom:timer-bar-card
+              entity: timer.away_mode_setting_timer
+              bar_direction: rtl
+              bar_foreground: '#eee'
+              bar_background: 'var(--mdc-theme-primary, #6200ee)'
+              modifications:
+                - elapsed: 70%
+                  bar_background: orange
+                - elapsed: 90%
+                  bar_background: red
+          - type: conditional
+            conditions:
+              - entity: input_boolean.away_mode
+                state: "on"
+              - entity: timer.away_mode_timeout_timer
+                state: "active"
+            card:
+              type: custom:timer-bar-card
+              entity: timer.away_mode_timeout_timer
+              bar_direction: rtl
+              bar_foreground: '#eee'
+              bar_background: 'var(--mdc-theme-primary, #6200ee)'
+              modifications:
+                - elapsed: 70%
+                  bar_background: orange
+                - elapsed: 90%
+                  bar_background: red
+              name: Koniec za
+      - type: conditional
+        conditions:
+          - entity: input_boolean.away_mode
+            state: "on"
+          - entity: timer.away_mode_setting_timer
+            state: "active"
+        card:
+          type: custom:vertical-stack-in-card
+          cards:
+            - type: entities
+              entities:
+                - entity: input_boolean.away_mode_turn_off_heating
+                  name: Wyłącz ogrzewanie
+                  icon: mdi:thermometer
+                - entity: input_boolean.away_mode_schedule_return
+                  name: Zaplanuj powrót
+                  icon: mdi:clock
+            - type: conditional
+              conditions:
+                - entity: input_boolean.away_mode_schedule_return
+                  state: "on"
+              card:
+                type: horizontal-stack
+                cards:
+                  - type: entities
+                    name: Planowany powrót
+                    entities:
+                      - entity: input_datetime.away_mode_timeout
+                        show_name: false
+                        card_mod:
+                          style: |
+                            ha-time-input {
+                              display: none;
+                            }
+                            :host {
+                              color: white;
+                            }
+                            hui-generic-entity-row {
+                              margin-top: 25px;
+                            }
+                            hui-generic-entity-row state-badge {
+                              color: white;
+                            }
+                  - type: 'custom:time-picker-card'
+                    entity: input_datetime.away_mode_timeout
+                    hour_mode: 24
+                    link_values: true
+                    hide: 
+                      name: true
+                    layout:
+                      name: inside
+                      align_controls: center
+                      embedded: true
+            - type: entities
+              entities:
+                - entity: input_boolean.schedule_cleaning
+                  name: Poodkurzaj
+                  icon: mdi:robot-vacuum-variant
+            - type: conditional
+              conditions: 
+                - entity: input_boolean.schedule_cleaning
+                  state: "on"
+              card:
+                type: entities
+                entities:
+                  - entity: input_boolean.schedule_cleaning_kitchen
+                    name: Kuchnia
+                    icon: mdi:silverware-fork-knife
+                  - entity: input_boolean.schedule_cleaning_living_room
+                    name: Salon
+                    icon: mdi:sofa
+                  - entity: input_boolean.schedule_cleaning_bedroom
+                    name: Sypialnia
+                    icon: mdi:bed
+                  - entity: input_boolean.schedule_cleaning_hall
+                    name: Korytarz
+                    icon: mdi:shoe-print
+  - type: "custom:button-card"
+    template: card_title
+    name: Parametry
+  - type: custom:auto-entities
+    card:
+      type: entities
+      card_mod:
+        style:
+          hui-input-number-entity-row $:
+            hui-generic-entity-row$: |
+              .info{
+                white-space: normal !important;
+              }
+    filter:
+      include:
+        - entity_id: /.*_param/
+          options: null
+      exclude: []
+  - type: "custom:button-card"
+    template: card_title
+    name: Baterie
   - type: horizontal-stack
     cards: 
       - type: 'custom:button-card'
@@ -81,3 +244,17 @@ cards:
             ulm_card_battery_battery_level_danger: 30
             ulm_card_battery_battery_level_warning: 80
         name: Czujnik drzwi wejściowych
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: card_navigate
+        variables:
+          ulm_card_navigate_path: '/ui-lovelace-minimalist/updated'
+          ulm_card_navigate_title: updated
+          ulm_card_navigate_icon: mdi:home
+      - type: custom:button-card
+        template: card_navigate
+        variables:
+          ulm_card_navigate_path: '/ui-lovelace-minimalist/another'
+          ulm_card_navigate_title: another
+          ulm_card_navigate_icon: mdi:home

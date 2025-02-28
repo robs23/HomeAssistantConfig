@@ -7,23 +7,142 @@ cards:
         template: chip_back
         variables:
           ulm_chip_back_path: home
-  - type: "custom:button-card"
-    template: card_title
-    name: Salon
+      - type: "custom:button-card"
+        template: card_title
+        name: Salon
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        template: chip_navigate
+        variables:
+          ulm_chip_navigate_path: /dashboard-mobile/living_room_automations/
+          ulm_chip_navigate_icon: mdi:robot
   - type: horizontal-stack
     cards:
-      - type: 'custom:button-card'
+      - type: "custom:button-card"
+        template: card_binary_sensor_alert
+        variables:
+          ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_alert_show_last_changed: true
+          ulm_card_binary_sensor_alert_name: "Balkon"
+          ulm_card_binary_sensor_alert_icon: mdi:window-closed-variant
+        entity: binary_sensor.balcony_door_sensor_balcony_door_sensor_contact
+      # - type: "custom:button-card"
+      #   template: card_input_boolean
+      #   entity: input_boolean.living_room_auto_mode
+      #   variables:
+      #     ulm_card_input_boolean_name: Automatyzacje
+      #     ulm_card_input_boolean_icon: mdi:home-automation
+      # - type: "custom:button-card"
+      #   template: card_light
+      #   entity: switch.laundry
+      #   variables:
+      #     ulm_card_light_name: Choinka
+      #     ulm_card_light_force_background_color: true
+      #     ulm_card_light_icon: mdi:string-lights
+      - type: "custom:button-card"
         template: card_input_boolean
         entity: input_boolean.sleeping_mode
         variables:
           ulm_card_input_boolean_name: Tryb nocny
-      - type: 'custom:button-card'
+          ulm_card_input_boolean_icon: mdi:lightbulb-night
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
         template: card_binary_sensor
         variables:
           ulm_card_binary_sensor_alert: true
-          ulm_show_last_changed: true
-          ulm_card_binary_sensor_name: "Ruch"
-        entity: binary_sensor.0x00158d00057280cd_occupancy
+          ulm_card_binary_sensor_show_last_changed: true
+          ulm_card_binary_sensor_name: "Obecność"
+        entity: binary_sensor.living_room_occupancy
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: "custom:button-card"
+        entity: input_boolean.living_room_schedule_expanded
+        state:
+          - value: "off"
+            icon: mdi:chevron-down
+            color: black
+          - value: "on"
+            icon: mdi:chevron-up
+            color: black
+        tap_action:
+          action: toggle
+        layout: icon_label
+        show_label: true
+        show_name: false
+        label: Harmonogram
+        styles:
+          grid:
+            - grid-template-areas: '"n i" "s i" "l i"'
+            - grid-template-columns: 1fr 40%
+          label:
+            - font-size: 26px
+            - font-weight: bold
+      - type: conditional
+        conditions:
+          - entity: input_boolean.living_room_schedule_expanded
+            state: "on"
+        card:
+          type: custom:scheduler-card
+          discover_existing: false
+          title: ""
+          display_options:
+            primary_info:
+              - "{entity}: {name}"
+            secondary_info: relative-time
+            icon: "hass:action"
+          customize:
+            climate.0x842e14fffee19a4b_climate:
+              name: "Termostat"
+              icon: thermometer
+              actions:
+                - service: climate.set_temperature
+                  variables:
+                    temperature:
+                      name: "Temperatura"
+                      min: 5
+                      max: 30
+                      step: 1
+                  icon: thermometer
+                  name: "Ustaw temperature"
+            cover.shellyplus2pm_5443b23f2dec:
+              name: "Roleta"
+              icon: blinds
+            input_boolean.sleeping_mode:
+              name: "Tryb nocny"
+              icon: weather-night
+          groups:
+            - thermostats:
+                domains: [climate]
+                icon: home-thermometer-outline
+                actions:
+                  - icon: thermometer-chevron-up
+                    service: set_temperature
+              name: Termostat
+              include:
+                - climate.0x842e14fffee19a4b_climate
+            - covers:
+                domains: [cover]
+                icon: blinds
+                actions:
+                  - icon: blinds
+                    service: set_cover_position
+              name: Roleta
+              include:
+                - cover.shellyplus2pm_5443b23f2dec
+            - input_booleans:
+                domains: [input_boolean]
+                icon: toggle-switch
+                actions:
+                  - icon: toggle-switch
+                    service: turn_on
+                  - icon: toggle-switch-off
+                    service: turn_off
+              name: Tryb nocny
+              include:
+                - input_boolean.sleeping_mode
+
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
@@ -35,6 +154,7 @@ cards:
           ulm_card_graph_entity: sensor.living_room_temperature
           ulm_card_graph_type: fill
           ulm_card_graph_hours: 24
+          ulm_card_graph_points: 1
   - type: horizontal-stack
     cards:
       - type: "custom:button-card"
@@ -67,18 +187,23 @@ cards:
           ulm_card_light_enable_color: true
           ulm_card_light_enable_collapse: true
           ulm_card_light_enable_popup: true
+          ulm_card_light_enable_popup_tap: true
   - type: "custom:button-card"
-    template: card_thermostat
-    entity: climate.0x842e14fffee19a4b_climate
+    template: card_cover
+    entity: cover.shellyplus2pm_5443b23f2dec
     variables:
-      ulm_card_thermostat_name: "Termostat"
-      ulm_card_thermostat_enable_collapse: true
-      ulm_card_thermostat_enable_controls: true
-      ulm_card_thermostat_enable_hvac_modes: true
-      ulm_card_thermostat_enable_popup: true
-      ulm_card_thermostat_enable_background_color: true
-      ulm_card_thermostat_enable_display_temperature: true
-  - type: 'custom:button-card'
+      ulm_card_cover_enable_controls: true
+      ulm_card_cover_enable_slider: true
+      ulm_card_cover_name: "Roleta"
+      ulm_icon_hold_action: "call-service"
+      ulm_icon_hold_service: "script.notify_on_state_changed"
+      ulm_icon_hold_service_data:
+        the_entity: cover.shellyplus2pm_5443b23f2dec
+        the_state: '[[[ return states["cover.shellyplus2pm_5443b23f2dec"].state ]]]'
+  - type: thermostat
+    entity: climate.0x842e14fffee19a4b_climate
+    name: Termostat
+  - type: "custom:button-card"
     template: card_input_boolean
     entity: input_boolean.tv
     variables:

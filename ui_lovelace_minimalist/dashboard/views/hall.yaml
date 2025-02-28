@@ -7,16 +7,33 @@ cards:
         template: chip_back
         variables:
           ulm_chip_back_path: home
-  - type: "custom:button-card"
-    template: card_title
-    name: Korytarz
-  - type: "custom:button-card"
-    template: card_light
-    entity: light.shelly_shsw_1_c45bbe75c8dd
-    variables:
-      ulm_card_light_name: Sufit
-      ulm_card_light_force_background_color: true
-      ulm_card_light_enable_popup: true
+      - type: "custom:button-card"
+        template: card_title
+        name: Korytarz
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        template: chip_navigate
+        variables:
+          ulm_chip_navigate_path: /dashboard-mobile/hall_automations/
+          ulm_chip_navigate_icon: mdi:robot
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.shelly_shsw_1_c45bbe75c8dd
+        variables:
+          ulm_card_light_name: Sufit
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_popup: true
+      - type: 'custom:button-card'
+        template: card_binary_sensor_alert
+        variables:
+          ulm_card_binary_sensor_alert: true
+          ulm_card_binary_sensor_alert_show_last_changed: true
+          ulm_card_binary_sensor_alert_name: "Drzwi"
+          ulm_card_binary_sensor_alert_icon: mdi:door
+        entity: binary_sensor.main_door_contact
   - type: custom:xiaomi-vacuum-map-card
     title: Odkurzanie
     vacuum_platform: KrzysztofHajdamowicz/miio2

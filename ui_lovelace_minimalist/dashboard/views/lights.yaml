@@ -97,3 +97,17 @@ cards:
       ulm_card_light_name: Sufit
       ulm_card_light_force_background_color: true
       ulm_card_light_enable_popup: true
+  - type: "custom:button-card"
+    template: card_title
+    name: Sypialnia
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.bedside_lamp
+        variables:
+          ulm_card_light_name: Lampka
+          ulm_card_light_force_background_color: true
+          ulm_card_light_enable_slider: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: true

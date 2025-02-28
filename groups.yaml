@@ -1,11 +1,3 @@
-Living_room_lights:
-  name: Living room lights
-  entities:
-    - switch.living_room_lights_l1
-    - switch.living_room_lights_l2
-    - switch.living_room_lights_l3
-    - light.tv_lights
-
 Family:
   name: Family
   entities:
@@ -15,5 +7,7 @@ Family:
 garmin:
   name: Garmin
   entities:
+    - script.turn_on_standby_mode
     - light.tv_lights
     - input_boolean.tv
+    - light.all_lights
